@@ -12,8 +12,4 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // toggleDarkMode: () => ipcRenderer.invoke('dark-mode:toggle'), // Exposing the function
   // getTheme: () => ipcRenderer.invoke('get-theme'),
 
-  
-  //Test Methods
-  getOS: () => ipcRenderer.invoke('get-os'),
-  getVersion: () => ipcRenderer.invoke('get-version'),
 });

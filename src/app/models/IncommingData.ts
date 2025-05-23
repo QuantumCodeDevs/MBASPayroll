@@ -1,9 +1,9 @@
-export class ExcelData {
-  ClientName: string | undefined;
-  ClinicianName: string | undefined;
-  DateOfService: Date | undefined;
-  OfficeName: string | undefined;
-  Status: string | undefined;
+export class IncomingData {
+  ClientName?: string;
+  ClinicianName?: string;
+  DateOfService?: Date;
+  OfficeName?: string;
+  Status?: string;
 
   constructor(data: {
     ClientName?: string;

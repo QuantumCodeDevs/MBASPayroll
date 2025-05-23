@@ -10,7 +10,7 @@ function parseCsvFile(filePath) {
     fs.createReadStream(filePath)
       .pipe(csv())
       .on('data', (row) => {
-        //console.log(row)
+        //Map to Clinician
         results.push(new Clinician(
             row.client_name,
             row.clinician_name,

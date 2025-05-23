@@ -11,7 +11,7 @@
         </div>
     
         <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Input File" value="{{selectedFile}}" disabled>
+            <input type="text" class="form-control" placeholder="Input File" value="{{inputFile?.FileName}}" disabled>
             <button class="btn btn-block btn-primary" (click)="selectFile()">Select File</button>
         </div>
     
@@ -27,7 +27,7 @@
           </div>
     
         <div class="mb-3">
-            <input type="text" class="form-control" placeholder="Output File" value="{{selectedFile}}-Output" disabled>
+            <input type="text" class="form-control" placeholder="Output File" value="{{outputFile?.FileName}}-Output" disabled>
         </div>
     
         <button class="btn btn-block btn-primary w-100" (click)="processFile()">Process File</button>

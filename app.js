@@ -85,6 +85,10 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
 })
 
+
+// Custom API Calls
+
+//Handle Selecting a CSV File
 ipcMain.handle('select-file', async () => {
     //Open File Dialog
     const result = await dialog.showOpenDialog({
@@ -112,7 +116,7 @@ ipcMain.handle('select-file', async () => {
     }
 })
 
-// Handle saving a CSV file
+// Handle Saving a CSV file
 ipcMain.handle('save-file', async (event, fileName, data) => {
   const result = await dialog.showSaveDialog({
     defaultPath: path.join(app.getPath('documents'), fileName || 'output.csv'),
@@ -134,32 +138,3 @@ ipcMain.handle('save-file', async (event, fileName, data) => {
     return { success: false, message: `Error saving CSV file: ${err.message}` };
   }
 });
-
-
-
-
-
-// Add more methods to access other Electron APIs
-
-
-// ipcMain.handle('dark-mode:toggle', () => {
-//     if (nativeTheme.shouldUseDarkColors) {
-//         nativeTheme.themeSource = 'light'
-//     } else {
-//         nativeTheme.themeSource = 'dark'
-//     }
-//     return nativeTheme.shouldUseDarkColors
-// })
-
-// ipcMain.handle('get-theme', () => {
-//     return nativeTheme.themeSource
-// })
-
-//HANDLE ELECTRON API Management between Renderer and preload.js
-// main.js (continued) const { ipcMain } = require('electron');  
-// ipcMain.handle('get-os', () => {
-//     return os.platform();
-// });
-// ipcMain.handle('get-version', () => {
-//     return app.getVersion();
-// });
