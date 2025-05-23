@@ -1,0 +1,50 @@
+
+<section class="container-fluid d-flex justify-content-center align-items-center h-100 p-3">
+    <div class="w-100 ">
+        <div class="p-5">
+            <h1 class="text-center">Mind Body Soul Excel Processing</h1>
+        </div>
+        
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Payroll Start Date</span>
+            <input id="startDate" class="form-control" type="date" />
+        </div>
+    
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Input File" value="{{selectedFile}}" disabled>
+            <button class="btn btn-block btn-primary" (click)="selectFile()">Select File</button>
+        </div>
+    
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Output Format</span>
+    
+            <select class="form-select " id="inputGroupSelect01">
+              <option selected>Choose...</option>
+              <option value="1" selected>CSV</option>
+              <option value="2">XLS</option>
+              <option value="3">XLSX</option>
+            </select>
+          </div>
+    
+        <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Output File" value="{{selectedFile}}-Output" disabled>
+        </div>
+    
+        <button class="btn btn-block btn-primary w-100" (click)="processFile()">Process File</button>
+    </div>
+</section>
+
+
+
+
+
+
+<!-- <section>
+    <p>home works!</p>
+    <p>App Version: {{ appVersion }}</p>
+    <p>Operating System: {{os}}</p>
+
+    <button class="btn btn-block btn-primary" routerLink="/example">Example</button>
+
+    <button class="btn btn-block btn-primary" (click)="getOSInfo()">Show OS Info</button>
+</section> -->

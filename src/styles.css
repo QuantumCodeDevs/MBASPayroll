@@ -1,1 +1,32 @@
 /* You can add global styles to this file, and also import other style files */
+html,
+body {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  border: 0;
+}
+
+
+/* Dark Mode */
+.dark-mode {
+  background-color: rgb(33, 37, 41);
+  color: #fff;
+}
+
+
+/*TAble*/
+body.dark-mode table {
+  border: 1px solid #111 !important
+}
+body.dark-mode table thead tr th {
+  background-color: #222 !important;
+  color: #fff !important;
+}
+
+body.dark-mode table tbody tr td {
+  background-color: #333 !important;
+  color: #fff !important;
+}

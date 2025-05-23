@@ -1,0 +1,18 @@
+<div class="d-flex">
+    <!-- Sidebar (Left) -->
+    <nav class="p-2 sidebar" style="width: 250px; height: 100vh; position: sticky; top: 0;">
+        <ul class="nav flex-column">
+            <li class="nav-item" *ngFor="let item of menuItems">
+                <a class="nav-link text-dark" [routerLink]="item.path" routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: true }">
+                    {{ item.label }}
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content (Right) -->
+    <div class="flex-grow-1 p-3">
+        <router-outlet></router-outlet>
+    </div>
+</div>

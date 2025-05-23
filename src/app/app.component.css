@@ -1,0 +1,22 @@
+    /* src/styles.scss */
+    :root {
+        --bg-color: #ffffff;
+        --text-color: #000000;
+    }
+
+    /* Make sure body and html fill the full height */
+    html,
+    body {
+        height: 100vh;
+        margin: 0;
+    }
+
+
+    .dark-theme {
+        --bg-color: #000000;
+        --text-color: #ffffff;
+    }
+    
+    body .dark-theme {
+        background-color: #000000;
+    }
