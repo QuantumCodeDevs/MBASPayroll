@@ -11,8 +11,8 @@ export class ExcelProcessingService {
     constructor() { }
 
     processCSV(csvData?: string): OutputFile {
-        //Turn the data string into an array
-        const clinicianArray = JSON.parse(csvData!).map((c: IncomingData) =>
+        //Turn the data string into an array and map to IncomingData
+        var clinicianArray = JSON.parse(csvData!).map((c: IncomingData) =>
               new IncomingData({
                 ClientName: c.ClientName,
                 ClinicianName: c.ClinicianName,
@@ -21,8 +21,14 @@ export class ExcelProcessingService {
                 Status: c.Status
               }));;
 
+        clinicianArray = clinicianArray.slice(1);
+
+        //Use this array to create the OutputData by selecting certain statuses and grouping them together for counting.
+        //Use a for loop
+
+
         return new OutputFile({
-            FileName: "processed_clinicians.json",
+            FileName: "processed_clinicians.csv",
             Data: this.arrayToCsv(clinicianArray)
         });
     }

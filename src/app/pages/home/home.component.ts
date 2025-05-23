@@ -1,4 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ElectronAPIService } from '../../services/electronAPIService';
 import { InputFile } from '../../models/InputFile';
 import { ExcelProcessingService } from '../../services/excelProcessingService';
@@ -6,7 +8,7 @@ import { OutputFile } from '../../models/OutputFile';
 
 @Component({
   selector: 'app-home',
-  imports: [],
+  imports: [CommonModule, FormsModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css' //,
   //encapsulation: ViewEncapsulation.None, // <-- Disable encapsulation
@@ -16,6 +18,7 @@ import { OutputFile } from '../../models/OutputFile';
 export class HomeComponent implements OnInit {
   inputFile: InputFile | undefined;
   outputFile: OutputFile | undefined
+  selectedDate?: Date;
 
   //Inject ElectronAPIService
   constructor(private electronAPIService: ElectronAPIService, private excelProcessingService: ExcelProcessingService) { }
@@ -29,7 +32,7 @@ export class HomeComponent implements OnInit {
   }
 
   async saveFile() {
-    await this.electronAPIService.saveFile("test.csv", this.outputFile?.Data);
+    await this.electronAPIService.saveFile(`${this.selectedDate}${this.outputFile?.FileName}`, this.outputFile?.Data);
   }
 
   async processFile() {
