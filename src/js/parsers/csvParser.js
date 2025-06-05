@@ -12,11 +12,19 @@ function parseCsvFile(filePath) {
       .on('data', (row) => {
         //Map to Clinician
         results.push(new Clinician(
-            row.client_name,
-            row.clinician_name,
-            row.date_of_service,
-            row.office_name,
-            row.status
+          row["Date of Service"],
+          row["Client"],
+          row["Clinician"],
+          row["Billing Code"],
+          row["Rate per Unit"],
+          row["Units"],
+          row["Total Fee"],
+          row["Progress Note Status"],
+          row["Client Payment Status"],
+          row["Charge"],
+          row["Uninvoiced"],
+          row["Paid"],
+          row["Unpaid"]
         ));
       })
       .on('end', () => {
@@ -29,5 +37,5 @@ function parseCsvFile(filePath) {
 }
 
 module.exports = {
-    parseCsvFile
+  parseCsvFile
 }

@@ -1,11 +1,19 @@
 //Incoming CSV Clinician Model
 class Clinician {
-  constructor(ClientName, ClinicianName, DateOfService, OfficeName, Status) {
-    this.ClientName = ClientName;
-    this.ClinicianName = ClinicianName;
+  constructor(DateOfService, Client, Clinician, BillingCode, RatePerUnit, Units, TotalFee, ProgressNoteStatus, ClientPaymentStatus, Charge, Uninvoiced, Paid, Unpaid) {
     this.DateOfService = DateOfService;
-    this.OfficeName = OfficeName;
-    this.Status = Status;
+    this.Client = Client;
+    this.Clinician = Clinician;
+    this.BillingCode = BillingCode;
+    this.RatePerUnit = RatePerUnit;
+    this.Units = Units;
+    this.TotalFee = TotalFee;
+    this.ProgressNoteStatus = ProgressNoteStatus;
+    this.ClientPaymentStatus = ClientPaymentStatus;
+    this.Charge = Charge;
+    this.Uninvoiced = Uninvoiced;
+    this.Paid = Paid;
+    this.Unpaid = Unpaid;
   }
 }
 

@@ -1,21 +1,45 @@
 export class IncomingData {
-  ClientName?: string;
-  ClinicianName?: string;
-  DateOfService?: Date;
-  OfficeName?: string;
-  Status?: string;
+  DateOfService?: string;
+  Client?: string;
+  Clinician?: string;
+  BillingCode?: string;
+  RatePerUnit?: string;
+  Units?: string;
+  TotalFee?: string;
+  ProgressNoteStatus?: string;
+  ClientPaymentStatus?: string;
+  Charge?: string;
+  Uninvoiced?: string;
+  Paid?: string;
+  Unpaid?: string;
 
   constructor(data: {
-    ClientName?: string;
-    ClinicianName?: string;
-    DateOfService?: string | Date;
-    OfficeName?: string;
-    Status?: string;
+    DateOfService?: string;
+    Client?: string;
+    Clinician?: string;
+    BillingCode?: string;
+    RatePerUnit?: string;
+    Units?: string;
+    TotalFee?: string;
+    ProgressNoteStatus?: string;
+    ClientPaymentStatus?: string;
+    Charge?: string;
+    Uninvoiced?: string;
+    Paid?: string;
+    Unpaid?: string;
   }) {
-    this.ClientName = data.ClientName;
-    this.ClinicianName = data.ClinicianName;
-    this.DateOfService = data.DateOfService ? new Date(data.DateOfService) : undefined;
-    this.OfficeName = data.OfficeName;
-    this.Status = data.Status;
+    this.DateOfService = data.DateOfService ;
+    this.Client = data.Client;
+    this.Clinician = data.Clinician;
+    this.BillingCode = data.BillingCode;
+    this.RatePerUnit = data.RatePerUnit;
+    this.Units = data.Units;
+    this.TotalFee = data.TotalFee;
+    this.ProgressNoteStatus = data.ProgressNoteStatus;
+    this.ClientPaymentStatus = data.ClientPaymentStatus;
+    this.Charge = data.Charge;
+    this.Uninvoiced = data.Uninvoiced;
+    this.Paid = data.Paid;
+    this.Unpaid = data.Unpaid;
   }
 }

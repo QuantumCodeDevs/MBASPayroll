@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ElectronAPIService } from '../../services/electronAPIService';
 import { InputFile } from '../../models/InputFile';
-import { ExcelProcessingService } from '../../services/excelProcessingService';
+import { FileProcessingService } from '../../services/fileProcessingService';
 import { OutputFile } from '../../models/OutputFile';
 
 @Component({
@@ -20,8 +20,8 @@ export class HomeComponent implements OnInit {
   outputFile: OutputFile | undefined
   selectedDate?: Date;
 
-  //Inject ElectronAPIService
-  constructor(private electronAPIService: ElectronAPIService, private excelProcessingService: ExcelProcessingService) { }
+  //Inject Services
+  constructor(private electronAPIService: ElectronAPIService, private fileProcessingService: FileProcessingService) { }
 
   ngOnInit(): void {
 
@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
 
   async processFile() {
     if (this.inputFile != null) {
-      this.outputFile = this.excelProcessingService.processCSV(this.inputFile.Data);
+      this.outputFile = this.fileProcessingService.processFile(this.selectedDate, this.inputFile);
       
       await this.saveFile();
     }

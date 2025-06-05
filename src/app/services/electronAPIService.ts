@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { InputFile } from '../models/InputFile';
 
+//Injectable decorator allows this service to be injected into components or other services
 @Injectable({
     providedIn: 'root',
 })
@@ -18,6 +19,9 @@ export class ElectronAPIService {
         return window.electronAPI.saveFile(fileName, content);
     }
 
+
+
+    
     toggleDarkMode(): Promise<boolean> {
         return window.electronAPI.toggleDarkMode();
     }
@@ -25,5 +29,6 @@ export class ElectronAPIService {
     getTheme(): Promise<string> {
         return window.electronAPI.getTheme();
     }
+
     // Add more methods to access other Electron APIs
 }
