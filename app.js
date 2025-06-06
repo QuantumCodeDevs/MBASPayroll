@@ -15,17 +15,20 @@ const createWindow = () => {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
             enableRemoteModule: false,
+            webSecurity: true
         }
     })
 
     // and load the index.html of the app.
-    mainWindow.loadURL(
-        url.format({
-            pathname: path.join(__dirname, `/dist/mbas-payroll/browser/index.html`),
-            protocol: "file:",
-            slashes: true
-        })
-    )
+    mainWindow.loadFile(path.join(__dirname, 'dist', 'mbas-payroll', 'browser', 'index.html'));
+
+    // mainWindow.loadURL(
+    //     url.format({
+    //         pathname: path.join(__dirname, `/dist/mbas-payroll/browser/index.html`),
+    //         protocol: "file:",
+    //         slashes: true
+    //     })
+    // )
 
     // Open the DevTools.
     mainWindow.webContents.openDevTools()
@@ -36,6 +39,10 @@ const createWindow = () => {
         {
             label: 'File',
             submenu: [
+                {
+                    label: "Home",
+                    click: () => mainWindow.webContents.send('navigate', '/')
+                },
                 {
                     label: 'Settings',
                     click: () => mainWindow.webContents.send('navigate', '/settings')
@@ -59,12 +66,19 @@ const createWindow = () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.enableSandbox()
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+    try {
+        await ses.clearCache();
+        console.log("Electron cache cleared.");
+    } catch (err) {
+        console.error("Error clearing cache:", err);
+    }
+
     //Set CORS Policy
     session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
         callback({
             responseHeaders: Object.assign({
-                // "Content-Security-Policy": ["default-src 'self' 'unsafe-inline';"]
+                "Content-Security-Policy": ["default-src 'self' 'unsafe-inline';"]
             }, details.responseHeaders)
         });
     });
@@ -109,7 +123,7 @@ ipcMain.handle('select-file', async () => {
     try {
         // const data = fs.readFileSync(filePaths[0]);
         const clinicians = await parseCsvFile(filePaths[0])
-        
+
         return { Success: true, FileName: filePaths[0], Data: JSON.stringify(clinicians), Message: 'Successfully read file' };
     } catch (err) {
         return { Success: false, FileName: '', Data: '', Message: `Error reading CSV file: ${err.message}` };
@@ -118,23 +132,23 @@ ipcMain.handle('select-file', async () => {
 
 // Handle Saving a CSV file
 ipcMain.handle('save-file', async (event, fileName, data) => {
-  const result = await dialog.showSaveDialog({
-    defaultPath: path.join(app.getPath('documents'), fileName || 'output.csv'),
-    filters: [{ name: 'CSV Files ore Text Files', extensions: ['csv', 'txt'] }]
-  });
+    const result = await dialog.showSaveDialog({
+        defaultPath: path.join(app.getPath('documents'), fileName || 'output.csv'),
+        filters: [{ name: 'CSV Files ore Text Files', extensions: ['csv', 'txt'] }]
+    });
 
-  if (result.canceled || !result.filePath) {
-    return { success: false, message: 'Save cancelled.' };
-  }
+    if (result.canceled || !result.filePath) {
+        return { success: false, message: 'Save cancelled.' };
+    }
 
-  try {
-    console.log("write file to:", result.filePath);
-    console.log(fileName);
-    console.log(data);
+    try {
+        console.log("write file to:", result.filePath);
+        console.log(fileName);
+        console.log(data);
 
-    fs.writeFileSync(result.filePath, data);
-    return { success: true, message: `File saved at ${result.filePath}` };
-  } catch (err) {
-    return { success: false, message: `Error saving CSV file: ${err.message}` };
-  }
+        fs.writeFileSync(result.filePath, data);
+        return { success: true, message: `File saved at ${result.filePath}` };
+    } catch (err) {
+        return { success: false, message: `Error saving CSV file: ${err.message}` };
+    }
 });
