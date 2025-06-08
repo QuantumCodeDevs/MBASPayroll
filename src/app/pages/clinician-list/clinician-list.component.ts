@@ -1,25 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// import { Clinician } from '../../models/ExcelData';
 import { Employment } from '../../models/enum/employment.enum';
+import { Employee } from '../../models/employee';
+import { InteractiveTableComponent } from '../../shared/interactive-table/interactive-table.component';
+import { ElectronAPIService } from '../../services/electronAPIService';
 
 @Component({
   selector: 'app-clinician-list',
-  imports: [CommonModule],
+  imports: [CommonModule, InteractiveTableComponent],
   templateUrl: './clinician-list.component.html',
   styleUrl: './clinician-list.component.css'
 })
-export class ClinicianListComponent {
-  //clinicians: Clinician[] = [];
+export class ClinicianListComponent implements OnInit {
+  employees: Employee[] = [];
 
-  ngOnInit() {
-    // this.clinicians = [
-    //   //Example
-    //   // {firstName: 'Kenny', lastName: 'Lamb', type: Employment.Contractor},
-    //   // {firstName: 'John', lastName: 'Doe', type: Employment.Employee}
-    // ];
+  constructor(private electronAPIService: ElectronAPIService) { }
 
-    //Fill from local storage
+  async ngOnInit() {
 
+    this.employees = await this.electronAPIService.getEmployeesFromDb();
+  }
+
+  async onEmployeesChange(updatedList: Employee[]) {
+    this.employees = updatedList;
+    await this.electronAPIService.saveEmployeesToDb(this.employees);
   }
 }

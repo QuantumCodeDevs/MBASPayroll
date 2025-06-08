@@ -19,6 +19,17 @@ export class ElectronAPIService {
         return window.electronAPI.saveFile(fileName, content);
     }
 
+    //Save Employees to Database
+    saveEmployeesToDb(employees: any[]): Promise<void> {
+        return window.electronAPI.saveEmployeesToDb(employees);
+    }
+
+    //Get Employees from Database
+    getEmployeesFromDb(): Promise<any[]> {
+        return window.electronAPI.getEmployeesFromDb();
+    }
+
+
 
 
     

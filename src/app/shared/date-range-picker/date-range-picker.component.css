@@ -3,13 +3,6 @@
   color: var(--text-color);
 }
 
-/* Dark mode override */
-body.dark-mode .calendar-popup {
-  background: #222;
-  color: #fff;
-  border-color: #444;
-}
-
 .day-cell {
   width: calc(100% / 7);
   height: 35px;

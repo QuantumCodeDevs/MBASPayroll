@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ElectronAPIService } from '../../services/electronAPIService';
@@ -12,8 +12,6 @@ import { DateRangePickerComponent } from '../../shared/date-range-picker/date-ra
   imports: [CommonModule, FormsModule, DateRangePickerComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css' //,
-  //encapsulation: ViewEncapsulation.None, // <-- Disable encapsulation
-
 })
 
 export class HomeComponent implements OnInit {

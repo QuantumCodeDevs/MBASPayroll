@@ -10,7 +10,7 @@ import { ThemeService } from '../../services/themeService';
   styleUrl: './sidenav.component.css'
 })
 export class SidenavComponent implements OnInit {
-  constructor(private themeService: ThemeService) {}
+  constructor() {}
 
   menuItems = [
     { label: 'General Settings', path: '/settings' },
@@ -18,8 +18,5 @@ export class SidenavComponent implements OnInit {
   ];
 
   ngOnInit() {
-    // Apply the theme globally on app initialization
-    // const isDark = this.themeService.isDarkMode();
-    // this.themeService.applyTheme(isDark);  // Apply the theme (dark or light) when app starts
   }
 }

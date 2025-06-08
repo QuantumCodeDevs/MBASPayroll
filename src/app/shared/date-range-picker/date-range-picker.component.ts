@@ -48,7 +48,6 @@ export class DateRangePickerComponent implements OnInit, OnDestroy {
     console.log('DateRangePickerComponent destroyed');
   }
 
-  // Toggle calendar visibility and reset start date
   toggleCalendar() {
     this.startDate = null; // Reset start date when toggling calendar
     this.showCalendar = !this.showCalendar;
@@ -101,7 +100,6 @@ export class DateRangePickerComponent implements OnInit, OnDestroy {
     this.selectedRange = `${this.formatDate(this.startDate)}_${this.formatDate(endDate)}`;
     this.inputField.nativeElement.value = this.selectedRange;
     this.showCalendar = false;
-    console.log('Selected Range:', this.selectedRange);
     this.dateRangeSelected.emit(this.selectedRange);
   }
 

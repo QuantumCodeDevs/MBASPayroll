@@ -1,9 +1,9 @@
 // main.js
-const { app, BrowserWindow, session, Menu, ipcMain, dialog, nativeTheme, OpenDialogReturnValue } = require('electron');
-const fs = require('fs');
-const path = require("path");
-const { parseCsvFile, parseCsv } = require('./src/js/parsers/csvParser');
+const { app, BrowserWindow, session, Menu, ipcMain, dialog, nativeTheme } = require('electron');
+const { join } = require('path');
 const { FileProcessor } = require('./src/js/fileProcessor');
+//Store for saving data
+let store;
 
 const createWindow = () => {
     // Create the browser window.
@@ -11,7 +11,7 @@ const createWindow = () => {
         width: 800,
         height: 600,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js'),
+            preload: join(__dirname, 'preload.js'),
             contextIsolation: true,
             enableRemoteModule: false,
             webSecurity: true
@@ -19,10 +19,10 @@ const createWindow = () => {
     })
 
     // and load the index.html of the app.
-    mainWindow.loadFile(path.join(__dirname, 'dist', 'mbas-payroll', 'browser', 'index.html'));
+    mainWindow.loadFile(join(__dirname, 'dist', 'mbas-payroll', 'browser', 'index.html'));
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools()
+    // mainWindow.webContents.openDevTools()
 
     //TODO: Update this to have a complete menu
     //Handle Menu Creation
@@ -46,7 +46,18 @@ const createWindow = () => {
             ]
         },
         {
-            label: 'View'
+            label: 'Help',
+            submenu: [
+                {
+                    label: 'Toggle Debug Tools',
+                    click: () => {
+                        const focusedWindow = BrowserWindow.getFocusedWindow();
+                        if (focusedWindow) {
+                            focusedWindow.webContents.toggleDevTools();
+                        }
+                    }
+                }
+            ]
         }
     ])
 
@@ -58,6 +69,11 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.enableSandbox()
 app.whenReady().then(async () => {
+    // Dynamically import electron-store
+    const Store = (await import('electron-store')).default;
+    store = new Store();
+
+    //DEBUG: Uncomment to clear cache
     // try {
     //     await session.clearCache();
     //     console.log("Electron cache cleared.");
@@ -90,8 +106,7 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
 })
 
-// Custom API Calls
-
+//API Calls to use in preload.js
 //Handle Selecting a CSV File
 ipcMain.handle('select-file', async () => {
     //Open File Dialog
@@ -109,7 +124,6 @@ ipcMain.handle('select-file', async () => {
         return { Success: false, FileName: '', Data: '', Message: "No file selected" };
     }
 
-    // Parse the CSV file and return its data into custom object
     try {
         const clinicians = await FileProcessor.readAndParse(filePaths[0])
         console.log(clinicians);
@@ -123,7 +137,7 @@ ipcMain.handle('select-file', async () => {
 // Handle Saving a CSV file
 ipcMain.handle('save-file', async (event, fileName, data) => {
     const result = await dialog.showSaveDialog({
-        defaultPath: path.join(app.getPath('documents'), fileName || 'output.csv'),
+        defaultPath: join(app.getPath('documents'), fileName || 'output.csv'),
         filters: [{ name: 'CSV Files', extensions: ['csv'] }]
     });
 
@@ -138,4 +152,15 @@ ipcMain.handle('save-file', async (event, fileName, data) => {
     } catch (err) {
         return { success: false, message: `Error saving CSV file: ${err.message}` };
     }
+});
+
+// Save employees
+ipcMain.handle('save-employees', async (event, employees) => {
+  store.set('employees', employees);
+  return { success: true };
+});
+
+// Load employees
+ipcMain.handle('load-employees', async () => {
+  return store.get('employees', []);
 });

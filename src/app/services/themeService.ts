@@ -27,8 +27,8 @@ export class ThemeService {
   applyTheme(isDark: boolean) {
     document.body.classList.toggle('dark-mode', isDark);
 
-    document.querySelectorAll('nav, app-home').forEach(element => {
-      element.classList.toggle('dark-mode', isDark);
-    });    
+    // document.querySelectorAll('nav, app-home').forEach(element => {
+    //   element.classList.toggle('dark-mode', isDark);
+    // });    
   }
 }

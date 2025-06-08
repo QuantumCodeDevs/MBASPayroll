@@ -15,8 +15,8 @@ export class AppComponent {
   constructor(private navigationService: NavigationService, private themeService: ThemeService) {}
 
   ngOnInit() {
-    // // Apply the theme globally on app initialization
-    // const isDark = this.themeService.isDarkMode();
-    // this.themeService.applyTheme(isDark);  // Apply the theme (dark or light) when app starts
+    // Apply the theme globally on app initialization
+    const isDark = this.themeService.isDarkMode();
+    this.themeService.applyTheme(isDark);  // Apply the theme (dark or light) when app starts
   }
 }

@@ -14,45 +14,20 @@ body {
 :root {
   --bg-color: #ffffff;
   --text-color: #000000;
+  --sidenav-bg-color: #d0d0d0;
+  --table-bg-color: #ffffff;
 }
 
+/*Default Dark Mode set variables then background and text*/
 .dark-mode {
   --bg-color: #222222;
   --text-color: #ffffff;
-  background-color: var(--bg-color) !important;
-  color: var(--text-color) !important;
+  --sidenav-bg-color: #333333;
+  --table-bg-color: #333;
+
+  /*Set the body bg and color*/
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 
-/*TAble*/
-.dark-mode table {
-  border: 1px solid #111 !important
-}
-
-.dark-mode table thead tr th {
-  background-color: #222 !important;
-  color: #fff !important;
-}
-
-.dark-mode table tbody tr td {
-  background-color: #333 !important;
-  color: #fff !important;
-}
-
-/* Sidebar */
-.dark-mode .sidebar {
-  background-color: #333 !important;
-}
-
-.dark-mode .nav-link {
-  color: #ccc !important;
-}
-
-.dark-mode .nav-link:hover {
-  color: #fff !important;
-}
-
-.dark-mode .active-link {
-  background-color: #007bff !important;
-  color: #fff !important;
-}
