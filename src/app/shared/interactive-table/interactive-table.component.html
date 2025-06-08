@@ -1,21 +1,33 @@
+<section class="container-fluid">
+    <h2 class="text-center mb-4">Employee Management</h2>
+</section>
+
 <section>
-    <button class="btn btn-primary btn-sm" (click)="addRow()">+ Add Employee</button>
+    <div class="input-group mb-2">
+        <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Search employees..."
+            [(ngModel)]="searchTerm"
+        />
+        <button class="btn btn-primary btn-sm" (click)="addRow()">+ Add Employee</button>
+    </div>
 </section>
 
 <table class="table table-bordered table-striped">
   <thead>
     <tr>
-      <th>#</th>
-      <th>First Name</th>
-      <th>Last Name</th>
-      <th>Personal Number</th>
-      <th>Work Number</th>
-      <th>Employment Type</th>
+      <th (click)="sortBy('index')" style="cursor:pointer;"># <span *ngIf="sortColumn === 'index'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span></th>
+      <th (click)="sortBy('firstName')" style="cursor:pointer;">First Name <span *ngIf="sortColumn === 'firstName'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span></th>
+      <th (click)="sortBy('lastName')" style="cursor:pointer;">Last Name <span *ngIf="sortColumn === 'lastName'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span></th>
+      <th (click)="sortBy('personalNumber')" style="cursor:pointer;">Personal Number <span *ngIf="sortColumn === 'personalNumber'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span></th>
+      <th (click)="sortBy('workNumber')" style="cursor:pointer;">Work Number <span *ngIf="sortColumn === 'workNumber'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span></th>
+      <th (click)="sortBy('type')" style="cursor:pointer;">Employment Type <span *ngIf="sortColumn === 'type'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span></th>
       <th>Actions</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let emp of employees; let i = index">
+    <tr *ngFor="let emp of filteredEmployees(); let i = index">
       <td>{{ i + 1 }}</td>
       <td><input [(ngModel)]="emp.firstName" (ngModelChange)="onFieldChange()" class="form-control" /></td>
       <td><input [(ngModel)]="emp.lastName" (ngModelChange)="onFieldChange()" class="form-control" /></td>
@@ -31,11 +43,5 @@
         <button class="btn btn-danger btn-sm" (click)="deleteRow(i)">Delete</button>
       </td>
     </tr>
-    <!-- Blank row for adding new employee -->
-    <!-- <tr>
-      <td colspan="7" class="text-center">
-        <button class="btn btn-success btn-sm" (click)="addRow()">+ Add Employee</button>
-      </td>
-    </tr> -->
   </tbody>
 </table>

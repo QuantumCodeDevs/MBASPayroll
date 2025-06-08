@@ -17,7 +17,6 @@ export class ClinicianListComponent implements OnInit {
   constructor(private electronAPIService: ElectronAPIService) { }
 
   async ngOnInit() {
-
     this.employees = await this.electronAPIService.getEmployeesFromDb();
   }
 

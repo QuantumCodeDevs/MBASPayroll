@@ -1,9 +1,0 @@
-table thead tr th {
-  background-color: var(--bg-color) !important;
-  color: var(--text-color) !important;
-}
-
-table tbody tr td {
-  background-color: var(--table-bg-color) !important;
-  color: var(--text-color) !important;
-}

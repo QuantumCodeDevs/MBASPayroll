@@ -21,6 +21,7 @@ export class FileProcessingService {
 
     // Convert CSV string to an array of InputData
     var clinicianArray = mapInputDatatoClinicianArray(data);
+    console.log(clinicianArray);
     // Filter out entries with MISC_Billing_Codes
     clinicianArray = filterOutMiscBillingCodes(clinicianArray);
     // Group by Clinician
@@ -41,17 +42,18 @@ export class FileProcessingService {
 }
 // This function maps the input data string to an array of IncomingData objects
 function mapInputDatatoClinicianArray(data: string): IncomingData[] {
-  return JSON.parse(data!).map((c: IncomingData) =>
+  console.log(data);
+  return JSON.parse(data!).map((c: any) =>
     new IncomingData({
-      DateOfService: c.DateOfService,
+      DateOfService: c['Date of Service'],
       Client: c.Client,
       Clinician: c.Clinician,
-      BillingCode: c.BillingCode,
-      RatePerUnit: c.RatePerUnit,
+      BillingCode: c['Billing Code'],
+      RatePerUnit: c['Rate Per Unit'],
       Units: c.Units,
-      TotalFee: c.TotalFee,
-      ProgressNoteStatus: c.ProgressNoteStatus,
-      ClientPaymentStatus: c.ClientPaymentStatus,
+      TotalFee: c['Total Fee'],
+      ProgressNoteStatus: c['Progress Note Status'],
+      ClientPaymentStatus: c['Client Payment Status'],
       Charge: c.Charge,
       Uninvoiced: c.Uninvoiced,
       Paid: c.Paid,
