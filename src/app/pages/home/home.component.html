@@ -18,11 +18,8 @@
         <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1">Output Format</span>
     
-            <select class="form-select " id="inputGroupSelect01">
-              <option selected>Choose...</option>
-              <option value="1" selected>CSV</option>
-              <option value="2">XLS</option>
-              <option value="3">XLSX</option>
+            <select class="form-select" [(ngModel)]="outputFormat" aria-label="Output Format">
+                <option *ngFor="let format of outputFormats" [value]="format">{{format}}</option>
             </select>
           </div>
     
@@ -33,18 +30,3 @@
         <button class="btn btn-block btn-primary w-100" (click)="processFile()">Process File</button>
     </div>
 </section>
-
-
-
-
-
-
-<!-- <section>
-    <p>home works!</p>
-    <p>App Version: {{ appVersion }}</p>
-    <p>Operating System: {{os}}</p>
-
-    <button class="btn btn-block btn-primary" routerLink="/example">Example</button>
-
-    <button class="btn btn-block btn-primary" (click)="getOSInfo()">Show OS Info</button>
-</section> -->

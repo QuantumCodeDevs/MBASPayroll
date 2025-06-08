@@ -19,9 +19,12 @@ export class HomeComponent implements OnInit {
   inputFile: InputFile | undefined;
   outputFile: OutputFile | undefined
   selectedDate?: Date;
+  outputFormat: any = 'csv'; // Default output format
+  outputFormats: string[] = ['csv']; // Add more formats as needed
+
 
   //Inject Services
-  constructor(private electronAPIService: ElectronAPIService, private fileProcessingService: FileProcessingService) { }
+  constructor(private electronAPIService: ElectronAPIService) { }
 
   ngOnInit(): void {
 
@@ -32,13 +35,18 @@ export class HomeComponent implements OnInit {
   }
 
   async saveFile() {
-    await this.electronAPIService.saveFile(`${this.selectedDate}${this.outputFile?.FileName}`, this.outputFile?.Data);
+    if (!this.outputFile) {
+      console.error("No output file to save.");
+      return;
+    }
+
+    await this.electronAPIService.saveFile(this.outputFile.FileName, this.outputFile.Data);
   }
 
   async processFile() {
     if (this.inputFile != null) {
-      this.outputFile = this.fileProcessingService.processFile(this.selectedDate, this.inputFile);
-      
+      this.outputFile = FileProcessingService.processFile(this.selectedDate, this.outputFormat, this.inputFile.Data);
+
       await this.saveFile();
     }
   }

@@ -1,10 +1,9 @@
 // main.js
 const { app, BrowserWindow, session, Menu, ipcMain, dialog, nativeTheme, OpenDialogReturnValue } = require('electron');
 const fs = require('fs');
-const url = require("url");
 const path = require("path");
-const os = require("os");
-const { parseCsvFile } = require('./src/js/parsers/csvParser');
+const { parseCsvFile, parseCsv } = require('./src/js/parsers/csvParser');
+const { FileProcessor } = require('./src/js/fileProcessor');
 
 const createWindow = () => {
     // Create the browser window.
@@ -21,14 +20,6 @@ const createWindow = () => {
 
     // and load the index.html of the app.
     mainWindow.loadFile(path.join(__dirname, 'dist', 'mbas-payroll', 'browser', 'index.html'));
-
-    // mainWindow.loadURL(
-    //     url.format({
-    //         pathname: path.join(__dirname, `/dist/mbas-payroll/browser/index.html`),
-    //         protocol: "file:",
-    //         slashes: true
-    //     })
-    // )
 
     // Open the DevTools.
     mainWindow.webContents.openDevTools()
@@ -67,12 +58,12 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.enableSandbox()
 app.whenReady().then(async () => {
-    try {
-        await ses.clearCache();
-        console.log("Electron cache cleared.");
-    } catch (err) {
-        console.error("Error clearing cache:", err);
-    }
+    // try {
+    //     await session.clearCache();
+    //     console.log("Electron cache cleared.");
+    // } catch (err) {
+    //     console.error("Error clearing cache:", err);
+    // }
 
     //Set CORS Policy
     session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
@@ -99,7 +90,6 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
 })
 
-
 // Custom API Calls
 
 //Handle Selecting a CSV File
@@ -121,8 +111,8 @@ ipcMain.handle('select-file', async () => {
 
     // Parse the CSV file and return its data into custom object
     try {
-        // const data = fs.readFileSync(filePaths[0]);
-        const clinicians = await parseCsvFile(filePaths[0])
+        const clinicians = await FileProcessor.readAndParse(filePaths[0])
+        console.log(clinicians);
 
         return { Success: true, FileName: filePaths[0], Data: JSON.stringify(clinicians), Message: 'Successfully read file' };
     } catch (err) {
@@ -134,7 +124,7 @@ ipcMain.handle('select-file', async () => {
 ipcMain.handle('save-file', async (event, fileName, data) => {
     const result = await dialog.showSaveDialog({
         defaultPath: path.join(app.getPath('documents'), fileName || 'output.csv'),
-        filters: [{ name: 'CSV Files ore Text Files', extensions: ['csv', 'txt'] }]
+        filters: [{ name: 'CSV Files', extensions: ['csv'] }]
     });
 
     if (result.canceled || !result.filePath) {
@@ -142,11 +132,8 @@ ipcMain.handle('save-file', async (event, fileName, data) => {
     }
 
     try {
-        console.log("write file to:", result.filePath);
-        console.log(fileName);
-        console.log(data);
+        FileProcessor.writeFile(result.filePath, data);
 
-        fs.writeFileSync(result.filePath, data);
         return { success: true, message: `File saved at ${result.filePath}` };
     } catch (err) {
         return { success: false, message: `Error saving CSV file: ${err.message}` };

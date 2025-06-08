@@ -2,7 +2,7 @@ import { InputFile } from "../models/InputFile"
 
 export interface IElectronAPI {
     selectFile: () => Promise<InputFile>,
-    saveFile: (fileName:string, content:string | undefined) => Promise<{ success: boolean; message: string }>,
+    saveFile: (fileName:string, content:string) => Promise<{ success: boolean; message: string }>,
     onNavigate: (string) => Promise<void>,
     toggleDarkMode: () => Promise<boolean>
     getTheme: () => Promise<string>,

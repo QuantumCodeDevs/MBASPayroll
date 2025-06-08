@@ -3,7 +3,7 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const Clinician = require('../models/clinician');
 
-function parseCsvFile(filePath) {
+function parseCsv(filePath) {
   return new Promise((resolve, reject) => {
     const results = [];
 
@@ -37,5 +37,5 @@ function parseCsvFile(filePath) {
 }
 
 module.exports = {
-  parseCsvFile
+  parseCsv
 }

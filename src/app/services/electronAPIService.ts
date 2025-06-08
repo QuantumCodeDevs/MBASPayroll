@@ -15,7 +15,7 @@ export class ElectronAPIService {
     }
 
     //Save to desktop
-    saveFile(fileName: string, content: string | undefined): Promise<{ success: boolean; message: string | undefined }> {
+    saveFile(fileName: string, content: string): Promise<{ success: boolean; message: string | undefined }> {
         return window.electronAPI.saveFile(fileName, content);
     }
 
