@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { IncomingData } from '../models/IncommingData';
+import { OutgoingData } from '../models/OutgoingData';
 import { OutputFile } from '../models/OutputFile';
-import { InputFile } from '../models/InputFile';
+import { MISC_Billing_Codes, SHOW_BILLING_CODES, NO_SHOW_BILLING_CODES, GROUP_HOURS } from '../models/billingCodes';
 
 //Injectable decorator allows this service to be injected into components or other services
 @Injectable({
@@ -13,27 +14,32 @@ export class FileProcessingService {
 
   constructor() { }
 
-  //Check file type and process accordingly
-  static processFile(date?: Date, format?: string, data?: string): OutputFile {
+  processFile(dateRange?: string, format?: string, data?: string): OutputFile {
     if (!data) {
       throw new Error('data is undefined');
     }
 
-    console.log(data);
     // Convert CSV string to an array of InputData
     var clinicianArray = mapInputDatatoClinicianArray(data);
+    // Filter out entries with MISC_Billing_Codes
+    clinicianArray = filterOutMiscBillingCodes(clinicianArray);
+    // Group by Clinician
+    const groupedData = groupByClinician(clinicianArray);
+    // Create output data from grouped data
+    const outputData = createOutputData(groupedData);
+    // Convert output data to CSV format
+    this.outputData = arrayToCsv(outputData);
 
-    clinicianArray = clinicianArray.slice(1);
 
-
+    //Could add a switch statement here to handle different formats in the future
     return new OutputFile({
-      FileName: `${date}processed_clinicians.${format}`,
-      Data: arrayToCsv(clinicianArray)
+      FileName: `${dateRange}processed_clinicians.${format}`,
+      Data: this.outputData
     });
   }
 
 }
-
+// This function maps the input data string to an array of IncomingData objects
 function mapInputDatatoClinicianArray(data: string): IncomingData[] {
   return JSON.parse(data!).map((c: IncomingData) =>
     new IncomingData({
@@ -50,9 +56,61 @@ function mapInputDatatoClinicianArray(data: string): IncomingData[] {
       Uninvoiced: c.Uninvoiced,
       Paid: c.Paid,
       Unpaid: c.Unpaid
-    }));;
+    }));
 }
 
+//Filter out entries with MISC_Billing_Codes
+function filterOutMiscBillingCodes(data: IncomingData[]): IncomingData[] {
+  return data.filter((c: IncomingData) => {
+    // Filter out entries with MISC_Billing_Codes
+    return !MISC_Billing_Codes.includes(c.BillingCode?.trim() ?? '');
+  });
+}
+
+//Group IncomingData by Clinician Creates a 2D array where each key is a clinician and the value is an array of IncomingData objects for that clinician
+function groupByClinician(data: IncomingData[]): Map<string, IncomingData[]> {
+  return data.reduce((map, clinician) => {
+    const name = clinician.Clinician ?? '';
+    if (!map.has(name)) {
+      map.set(name, []);
+    }
+    map.get(name)!.push(clinician);
+    return map;
+  }, new Map<string, IncomingData[]>());
+}
+
+function createOutputData(groups: Map<string, IncomingData[]>): OutgoingData[] {
+  return Array.from(groups.entries()).map(([name, clinicians]) => {
+    // Split the clinician name into first and last names
+    const [firstName, lastName = ''] = name.split(' ');
+
+    // Calculate Show_Hours and Late_No_Show_Hours based on BillingCode
+    const showHours = clinicians
+      .filter((c: IncomingData) => SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? ''))
+      .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
+
+    const lateNoShowHours = clinicians
+      .filter((c: IncomingData) => NO_SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? ''))
+      .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
+
+    const groupHours = clinicians
+      .filter((c: IncomingData) => GROUP_HOURS.includes(c.BillingCode?.trim() ?? ''))
+      .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
+
+    // Create and return the OutgoingData object
+    return new OutgoingData({
+      ClinicianFirstName: firstName,
+      ClinicianLastName: lastName,
+      ShowHours: showHours,
+      ShowHoursNoNotes: 0, // Provide a default or calculated value as needed
+      LateNoShowHours: lateNoShowHours,
+      GroupHours: groupHours,
+      Notes: '', // Provide a default or calculated value as needed
+    });
+  });
+}
+
+// Converts an array of objects to a CSV string
 function arrayToCsv(data: any[]): string {
   if (!data.length) return '';
   const headers = Object.keys(data[0]).join(',');

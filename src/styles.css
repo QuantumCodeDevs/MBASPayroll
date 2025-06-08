@@ -1,4 +1,5 @@
-/* You can add global styles to this file, and also import other style files */
+/*Global Styles*/
+/*Default html, body*/
 html,
 body {
   height: 100vh;
@@ -9,24 +10,49 @@ body {
   border: 0;
 }
 
+/* Define CSS variables for background and text color*/
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+}
 
-/* Dark Mode */
 .dark-mode {
-  background-color: rgb(33, 37, 41);
-  color: #fff;
+  --bg-color: #222222;
+  --text-color: #ffffff;
+  background-color: var(--bg-color) !important;
+  color: var(--text-color) !important;
 }
 
 
 /*TAble*/
-body.dark-mode table {
+.dark-mode table {
   border: 1px solid #111 !important
 }
-body.dark-mode table thead tr th {
+
+.dark-mode table thead tr th {
   background-color: #222 !important;
   color: #fff !important;
 }
 
-body.dark-mode table tbody tr td {
+.dark-mode table tbody tr td {
   background-color: #333 !important;
+  color: #fff !important;
+}
+
+/* Sidebar */
+.dark-mode .sidebar {
+  background-color: #333 !important;
+}
+
+.dark-mode .nav-link {
+  color: #ccc !important;
+}
+
+.dark-mode .nav-link:hover {
+  color: #fff !important;
+}
+
+.dark-mode .active-link {
+  background-color: #007bff !important;
   color: #fff !important;
 }

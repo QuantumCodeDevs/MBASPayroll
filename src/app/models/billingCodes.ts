@@ -8,17 +8,21 @@ export const MISC_Billing_Codes: string[] = [
 ];
 
 export const SHOW_BILLING_CODES: string[] = [
+    "90837",
     "90791",
     "90832",
     "90834",
     "90839",
     "90846",
     "90847",
-    "90863",
     "90854",
     "90855",
-    "gr"
 ];
+
+export const GROUP_HOURS: string[] = [
+    "gr",
+    "90853",
+]
 
 export const NO_SHOW_BILLING_CODES: string[] = [
     "111",

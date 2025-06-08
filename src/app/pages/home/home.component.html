@@ -1,18 +1,21 @@
-
-<section class="container-fluid d-flex justify-content-center align-items-center h-100 p-3">
+<section class="container-fluid d-flex justify-content-center align-items-center h-100 p-5">
     <div class="w-100 ">
         <div class="p-5">
             <h1 class="text-center">Mind Body Soul Excel Processing</h1>
         </div>
         
-        <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">Payroll Start Date</span>
-            <input id="startDate" class="form-control" type="date" [(ngModel)]="selectedDate"/>
+        
+
+        <div class="input-group mb-3 align-items-center">
+            <span class="input-group-text" id="basic-addon1">Payroll Date Range</span>
+            <div class="flex-grow-1">
+                <app-date-range-picker class="w-100" (dateRangeSelected)="onRangeSelected($event)"></app-date-range-picker>
+            </div>
         </div>
-    
+
         <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Input File" value="{{inputFile?.FileName}}" disabled>
-            <button class="btn btn-block btn-primary" (click)="selectFile()">Select File</button>
+            <input type="text" class="form-control" placeholder="Input File" [value]="inputFile?.FileName" disabled>
+            <button class="btn btn-block btn-primary w-25" (click)="selectFile()">Select File</button>
         </div>
     
         <div class="input-group mb-3">
@@ -24,7 +27,7 @@
           </div>
     
         <div class="mb-3">
-            <input type="text" class="form-control" placeholder="Output File" value="{{outputFile?.FileName}}-Output" disabled>
+            <input type="text" class="form-control" placeholder="Output File" [value]="outputFile?.FileName" disabled>
         </div>
     
         <button class="btn btn-block btn-primary w-100" (click)="processFile()">Process File</button>

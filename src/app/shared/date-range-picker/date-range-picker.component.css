@@ -1,0 +1,50 @@
+.calendar-popup {
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Dark mode override */
+body.dark-mode .calendar-popup {
+  background: #222;
+  color: #fff;
+  border-color: #444;
+}
+
+.day-cell {
+  width: calc(100% / 7);
+  height: 35px;
+  line-height: 35px;
+  cursor: pointer;
+  user-select: none;
+  border-radius: 4px;
+  margin-bottom: 2px;
+  transition: background-color 0.2s, border 0.2s;
+}
+
+.day-cell.empty {
+  cursor: default;
+  background: none !important;
+}
+
+.day-cell:hover:not(.empty) {
+  background-color: #e9f5ff;
+}
+
+.day-cell.selected {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.day-cell.in-range {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.day-cell.in-hover-range {
+  border: 2px dotted #0d6efd;
+  background-color: rgba(13, 110, 253, 0.2);
+}
+
+input[name="dateSelector"] {
+  cursor: pointer; /* Use pointer for hand cursor */
+}

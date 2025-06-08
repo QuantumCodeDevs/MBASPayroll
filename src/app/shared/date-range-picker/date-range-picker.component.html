@@ -1,0 +1,36 @@
+<section class="w-100 position-relative">
+    <input #inputField id="dateSelector" name="dateSelector" [value]="selectedRange" type="text"
+                class="form-control rounded-start-0" readonly (click)="toggleCalendar()" />
+    
+    <!-- Calendar Popup: absolutely positioned, not inside input-group -->
+    <div *ngIf="showCalendar" class="calendar-popup border rounded shadow p-3 position-absolute"
+        style="z-index: 1050; width: 250px; top: 100%; left: 0;">
+        <!-- Month nav -->
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <button class="btn btn-sm btn-outline-primary" (click)="prevMonth()">&lt;</button>
+            <strong>{{ displayedYear }} - {{ displayedMonth + 1 }}</strong>
+            <button class="btn btn-sm btn-outline-primary" (click)="nextMonth()">&gt;</button>
+        </div>
+
+        <!-- Weekday headers -->
+        <div class="d-flex">
+            <div class="flex-fill text-center fw-bold">Su</div>
+            <div class="flex-fill text-center fw-bold">Mo</div>
+            <div class="flex-fill text-center fw-bold">Tu</div>
+            <div class="flex-fill text-center fw-bold">We</div>
+            <div class="flex-fill text-center fw-bold">Th</div>
+            <div class="flex-fill text-center fw-bold">Fr</div>
+            <div class="flex-fill text-center fw-bold">Sa</div>
+        </div>
+
+        <!-- Calendar days -->
+        <div class="d-flex flex-wrap">
+            <div *ngFor="let day of calendarDays" class="day-cell text-center" [class.empty]="!day"
+                [class.selected]="day && day.getTime() === startDate?.getTime()" [class.in-range]="isInRange(day)"
+                [class.in-hover-range]="isInHoverRange(day)" (click)="selectDate(day)" (mouseenter)="hoverDate = day"
+                (mouseleave)="hoverDate = null">
+                {{ day?.getDate() || '' }}
+            </div>
+        </div>
+    </div>
+</section>

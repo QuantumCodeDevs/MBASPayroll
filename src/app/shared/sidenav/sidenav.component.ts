@@ -19,7 +19,7 @@ export class SidenavComponent implements OnInit {
 
   ngOnInit() {
     // Apply the theme globally on app initialization
-    const isDark = this.themeService.isDarkMode();
-    this.themeService.applyTheme(isDark);  // Apply the theme (dark or light) when app starts
+    // const isDark = this.themeService.isDarkMode();
+    // this.themeService.applyTheme(isDark);  // Apply the theme (dark or light) when app starts
   }
 }
