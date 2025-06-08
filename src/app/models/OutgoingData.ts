@@ -5,6 +5,7 @@ export class OutgoingData {
     ShowHoursNoNotes!: number;
     LateNoShowHours!: number;
     GroupHours!: number;
+    TotalHours!: number; // This can be calculated if needed
     Notes: string = '';
 
     constructor(data: {
@@ -14,6 +15,7 @@ export class OutgoingData {
         ShowHoursNoNotes: number;
         LateNoShowHours: number;
         GroupHours: number;
+        TotalHours: number; // Optional, can be calculated later
         Notes: string;
     }) {
         this.ClinicianFirstName = data.ClinicianFirstName;
@@ -22,6 +24,7 @@ export class OutgoingData {
         this.ShowHoursNoNotes = data.ShowHoursNoNotes;
         this.LateNoShowHours = data.LateNoShowHours;
         this.GroupHours = data.GroupHours;
+        this.TotalHours = data.TotalHours
         this.Notes = data.Notes;
     }
 }

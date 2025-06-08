@@ -10,7 +10,7 @@ import { MISC_Billing_Codes, SHOW_BILLING_CODES, NO_SHOW_BILLING_CODES, GROUP_HO
 })
 
 export class FileProcessingService {
-  outputData!: string;
+  outputData!: any; // This will hold the processed output data can be either string or array depending on the format
 
   constructor() { }
 
@@ -21,15 +21,19 @@ export class FileProcessingService {
 
     // Convert CSV string to an array of InputData
     var clinicianArray = mapInputDatatoClinicianArray(data);
-    console.log(clinicianArray);
     // Filter out entries with MISC_Billing_Codes
     clinicianArray = filterOutMiscBillingCodes(clinicianArray);
     // Group by Clinician
     const groupedData = groupByClinician(clinicianArray);
     // Create output data from grouped data
     const outputData = createOutputData(groupedData);
-    // Convert output data to CSV format
-    this.outputData = arrayToCsv(outputData);
+
+    switch (format) {
+      case 'csv':
+        // If format is csv, we will convert the output data to CSV format
+        this.outputData = arrayToCsv(outputData);
+        break;
+    }
 
 
     //Could add a switch statement here to handle different formats in the future
@@ -42,7 +46,6 @@ export class FileProcessingService {
 }
 // This function maps the input data string to an array of IncomingData objects
 function mapInputDatatoClinicianArray(data: string): IncomingData[] {
-  console.log(data);
   return JSON.parse(data!).map((c: any) =>
     new IncomingData({
       DateOfService: c['Date of Service'],
@@ -82,6 +85,8 @@ function groupByClinician(data: IncomingData[]): Map<string, IncomingData[]> {
 }
 
 function createOutputData(groups: Map<string, IncomingData[]>): OutgoingData[] {
+  console.log(groups);
+
   return Array.from(groups.entries()).map(([name, clinicians]) => {
     // Split the clinician name into first and last names
     const [firstName, lastName = ''] = name.split(' ');
@@ -90,6 +95,17 @@ function createOutputData(groups: Map<string, IncomingData[]>): OutgoingData[] {
     const showHours = clinicians
       .filter((c: IncomingData) => SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? ''))
       .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
+
+    const showHoursNoNotes = clinicians
+      .filter((c: IncomingData) => SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ProgressNoteStatus?.toLowerCase().trim() === 'no note')
+      .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
+
+    //Get all the dates that are not in the showHoursNoNotes
+    const showHoursNoNotesDates = clinicians
+      .filter((c: IncomingData) => SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ProgressNoteStatus?.toLowerCase().trim() === 'no note')
+      .map(c => c.DateOfService).join(';')
+
+    console.log('showHoursNoNotesDates', showHoursNoNotesDates);
 
     const lateNoShowHours = clinicians
       .filter((c: IncomingData) => NO_SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? ''))
@@ -104,9 +120,10 @@ function createOutputData(groups: Map<string, IncomingData[]>): OutgoingData[] {
       ClinicianFirstName: firstName,
       ClinicianLastName: lastName,
       ShowHours: showHours,
-      ShowHoursNoNotes: 0, // Provide a default or calculated value as needed
+      ShowHoursNoNotes: showHoursNoNotes,
       LateNoShowHours: lateNoShowHours,
       GroupHours: groupHours,
+      TotalHours: showHours + lateNoShowHours + groupHours, // Calculate total hours
       Notes: '', // Provide a default or calculated value as needed
     });
   });

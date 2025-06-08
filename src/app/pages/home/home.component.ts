@@ -31,7 +31,6 @@ export class HomeComponent implements OnInit {
   }
 
   onRangeSelected($event: any) {
-    console.log($event);
     this.selectedDateRange = $event?.target?.value ?? $event;
   } 
 

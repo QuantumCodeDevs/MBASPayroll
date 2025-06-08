@@ -126,7 +126,7 @@ ipcMain.handle('select-file', async () => {
 
     try {
         const clinicians = await FileProcessor.readAndParse(filePaths[0])
-        console.log(clinicians);
+        // console.log(clinicians);
 
         return { Success: true, FileName: filePaths[0], Data: JSON.stringify(clinicians), Message: 'Successfully read file' };
     } catch (err) {
