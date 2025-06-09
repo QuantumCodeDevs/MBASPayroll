@@ -87,13 +87,14 @@ function groupByClinician(data: IncomingData[]): Map<string, IncomingData[]> {
 function createOutputData(groups: Map<string, IncomingData[]>): OutgoingData[] {
   console.log(groups);
 
+  
   return Array.from(groups.entries()).map(([name, clinicians]) => {
     // Split the clinician name into first and last names
     const [firstName, lastName = ''] = name.split(' ');
 
     // Calculate Show_Hours and Late_No_Show_Hours based on BillingCode
-    const showHours = clinicians
-      .filter((c: IncomingData) => SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? ''))
+    const showHoursNotes = clinicians
+      .filter((c: IncomingData) => SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '')&& c.ProgressNoteStatus?.toLowerCase().trim() !== 'no note')
       .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
 
     const showHoursNoNotes = clinicians
@@ -101,14 +102,18 @@ function createOutputData(groups: Map<string, IncomingData[]>): OutgoingData[] {
       .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
 
     //Get all the dates that are not in the showHoursNoNotes
-    const showHoursNoNotesDates = clinicians
-      .filter((c: IncomingData) => SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ProgressNoteStatus?.toLowerCase().trim() === 'no note')
-      .map(c => c.DateOfService).join(';')
+    // const showHoursNoNotesDates = clinicians
+    //   .filter((c: IncomingData) => SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ProgressNoteStatus?.toLowerCase().trim() === 'no note')
+    //   .map(c => c.DateOfService).join(';')
 
-    console.log('showHoursNoNotesDates', showHoursNoNotesDates);
+    // console.log('showHoursNoNotesDates', showHoursNoNotesDates);
 
-    const lateNoShowHours = clinicians
-      .filter((c: IncomingData) => NO_SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? ''))
+    const lateNoShowHoursPaid = clinicians
+      .filter((c: IncomingData) => NO_SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ClientPaymentStatus?.toLowerCase().trim() === 'paid')
+      .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
+
+    const lateNoShowHoursUnPaid = clinicians
+      .filter((c: IncomingData) => NO_SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ClientPaymentStatus?.toLowerCase().trim() === 'unpaid')
       .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
 
     const groupHours = clinicians
@@ -119,11 +124,12 @@ function createOutputData(groups: Map<string, IncomingData[]>): OutgoingData[] {
     return new OutgoingData({
       ClinicianFirstName: firstName,
       ClinicianLastName: lastName,
-      ShowHours: showHours,
+      ShowHoursNotes: showHoursNotes, // Subtract showHoursNoNotes from showHours
       ShowHoursNoNotes: showHoursNoNotes,
-      LateNoShowHours: lateNoShowHours,
+      LateNoShowHoursPaid: lateNoShowHoursPaid,
+      LateNoShowHoursUnPaid: lateNoShowHoursUnPaid, // Assuming this is not calculated in the current logic
       GroupHours: groupHours,
-      TotalHours: showHours + lateNoShowHours + groupHours, // Calculate total hours
+      TotalHours: showHoursNotes + lateNoShowHoursPaid, // Calculate total hours
       Notes: '', // Provide a default or calculated value as needed
     });
   });

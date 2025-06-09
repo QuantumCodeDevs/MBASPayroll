@@ -1,28 +1,31 @@
 export class OutgoingData {
     ClinicianFirstName!: string;
     ClinicianLastName!: string;
-    ShowHours!: number;
+    ShowHoursNotes!: number;
     ShowHoursNoNotes!: number;
-    LateNoShowHours!: number;
+    LateNoShowHoursPaid!: number;
+    LateNoShowHoursUnPaid!: number;
     GroupHours!: number;
-    TotalHours!: number; // This can be calculated if needed
+    TotalHours!: number;
     Notes: string = '';
 
     constructor(data: {
         ClinicianFirstName: string;
         ClinicianLastName: string;
-        ShowHours: number;
+        ShowHoursNotes: number;
         ShowHoursNoNotes: number;
-        LateNoShowHours: number;
+        LateNoShowHoursPaid: number;
+        LateNoShowHoursUnPaid: number;
         GroupHours: number;
-        TotalHours: number; // Optional, can be calculated later
+        TotalHours: number;
         Notes: string;
     }) {
         this.ClinicianFirstName = data.ClinicianFirstName;
         this.ClinicianLastName = data.ClinicianLastName;
-        this.ShowHours = data.ShowHours;
+        this.ShowHoursNotes = data.ShowHoursNotes;
         this.ShowHoursNoNotes = data.ShowHoursNoNotes;
-        this.LateNoShowHours = data.LateNoShowHours;
+        this.LateNoShowHoursPaid = data.LateNoShowHoursPaid;
+        this.LateNoShowHoursUnPaid = data.LateNoShowHoursUnPaid;
         this.GroupHours = data.GroupHours;
         this.TotalHours = data.TotalHours
         this.Notes = data.Notes;

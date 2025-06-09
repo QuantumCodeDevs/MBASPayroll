@@ -1,5 +1,5 @@
 // main.js
-const { app, BrowserWindow, session, Menu, ipcMain, dialog, nativeTheme } = require('electron');
+const { app, BrowserWindow, session, Menu, ipcMain, dialog, protocol, nativeTheme } = require('electron');
 const { join } = require('path');
 const { FileProcessor } = require('./src/js/fileProcessor');
 //Store for saving data
@@ -21,9 +21,6 @@ const createWindow = () => {
     // and load the index.html of the app.
     mainWindow.loadFile(join(__dirname, 'dist', 'mbas-payroll', 'browser', 'index.html'));
 
-    // Open the DevTools.
-    // mainWindow.webContents.openDevTools()
-
     //TODO: Update this to have a complete menu
     //Handle Menu Creation
     const menu = Menu.buildFromTemplate([
@@ -32,16 +29,53 @@ const createWindow = () => {
             submenu: [
                 {
                     label: "Home",
+                    accelerator: process.platform === 'darwin' ? 'Command+H' : 'Ctrl+H',
                     click: () => mainWindow.webContents.send('navigate', '/')
                 },
                 {
                     label: 'Settings',
+                    accelerator: process.platform === 'darwin' ? 'Command+S' : 'Ctrl+S',
                     click: () => mainWindow.webContents.send('navigate', '/settings')
                 },
                 {
-                    label: 'Exit',
-                    click: () => app.quit(),
-                    //sublabel: 'Ctrl+Q'
+                    label: 'Quit',
+                    accelerator: process.platform === 'darwin' ? 'Command+Q' : 'Ctrl+Q',
+                    click: () => app.quit()
+                }
+            ]
+        },
+        {
+            label: 'View',
+            submenu: [
+                {
+                    label: 'Reload',
+                    accelerator: process.platform === 'darwin' ? 'Command+R' : 'Ctrl+R',
+                    click: () => {
+                        const focusedWindow = BrowserWindow.getFocusedWindow();
+                        if (focusedWindow) {
+                            focusedWindow.reload();
+                        }
+                    }
+                },
+                {
+                    label: 'Force Reload',
+                    accelerator: process.platform === 'darwin' ? 'Command+Shift+R' : 'Ctrl+Shift+R',
+                    click: () => {
+                        const focusedWindow = BrowserWindow.getFocusedWindow();
+                        if (focusedWindow) {
+                            focusedWindow.webContents.reloadIgnoringCache();
+                        }
+                    }
+                },
+                {
+                    label: 'Toggle Debug Tools',
+                    accelerator: process.platform === 'darwin' ? 'Command+Alt+I' : 'Ctrl+Shift+I',
+                    click: () => {
+                        const focusedWindow = BrowserWindow.getFocusedWindow();
+                        if (focusedWindow) {
+                            focusedWindow.webContents.toggleDevTools();
+                        }
+                    }
                 }
             ]
         },
@@ -49,12 +83,14 @@ const createWindow = () => {
             label: 'Help',
             submenu: [
                 {
-                    label: 'Toggle Debug Tools',
+                    label: 'About',
                     click: () => {
-                        const focusedWindow = BrowserWindow.getFocusedWindow();
-                        if (focusedWindow) {
-                            focusedWindow.webContents.toggleDevTools();
-                        }
+                        dialog.showMessageBox({
+                            type: 'info',
+                            title: 'About MBAS Payroll',
+                            message: `MBAS Payroll Application\nVersion ${app.getVersion()}\nDeveloped by Kenneth Lamb`,
+                            buttons: ['OK']
+                        });
                     }
                 }
             ]
@@ -69,17 +105,27 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.enableSandbox()
 app.whenReady().then(async () => {
+    // protocol.handle('app', async (request) => {
+    //     const url = new URL(request.url);
+    //     const filePath = decodeURIComponent(url.pathname);
+    //     const fullPath = path.join(__dirname, '../dist/mbas-payroll/browser', filePath);
+
+    //     // If the file exists, return it; otherwise, return index.html
+    //     return new Response(
+    //         fs.existsSync(fullPath)
+    //             ? fs.readFileSync(fullPath)
+    //             : fs.readFileSync(path.join(__dirname, '../dist/mbas-payroll/browser/index.html')),
+    //         {
+    //             headers: {
+    //                 'Content-Type': 'text/html',
+    //             }
+    //         }
+    //     );
+    // });
+
     // Dynamically import electron-store
     const Store = (await import('electron-store')).default;
     store = new Store();
-
-    //DEBUG: Uncomment to clear cache
-    // try {
-    //     await session.clearCache();
-    //     console.log("Electron cache cleared.");
-    // } catch (err) {
-    //     console.error("Error clearing cache:", err);
-    // }
 
     //Set CORS Policy
     session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
@@ -89,6 +135,14 @@ app.whenReady().then(async () => {
             }, details.responseHeaders)
         });
     });
+
+    //DEBUG: Uncomment to clear cache
+    // try {
+    //     await session.clearCache();
+    //     console.log("Electron cache cleared.");
+    // } catch (err) {
+    //     console.error("Error clearing cache:", err);
+    // }
 
     createWindow()
 
@@ -106,7 +160,9 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
 })
 
-//API Calls to use in preload.js
+//API Calls to use in preload.js//
+
+//#region File Selection and Saving//
 //Handle Selecting a CSV File
 ipcMain.handle('select-file', async () => {
     //Open File Dialog
@@ -153,14 +209,17 @@ ipcMain.handle('save-file', async (event, fileName, data) => {
         return { success: false, message: `Error saving CSV file: ${err.message}` };
     }
 });
+//#endregion
 
+//#region Handle Employee list storage
 // Save employees
 ipcMain.handle('save-employees', async (event, employees) => {
-  store.set('employees', employees);
-  return { success: true };
+    store.set('employees', employees);
+    return { success: true };
 });
 
 // Load employees
 ipcMain.handle('load-employees', async () => {
-  return store.get('employees', []);
+    return store.get('employees', []);
 });
+//#endregion

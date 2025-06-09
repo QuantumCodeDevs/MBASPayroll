@@ -1,0 +1,9 @@
+.toast-container {
+  min-width: 250px;
+  pointer-events: none;
+}
+.toast {
+  pointer-events: auto;
+  opacity: 0.95;
+  transition: opacity 0.3s;
+}
