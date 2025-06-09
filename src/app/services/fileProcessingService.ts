@@ -88,51 +88,51 @@ function createOutputData(groups: Map<string, IncomingData[]>): OutgoingData[] {
   console.log(groups);
 
   
-  return Array.from(groups.entries()).map(([name, clinicians]) => {
-    // Split the clinician name into first and last names
-    const [firstName, lastName = ''] = name.split(' ');
+  // Convert groups to array, sort by first name, then map to OutgoingData
+  return Array.from(groups.entries())
+    .sort(([aName], [bName]) => {
+      const [aFirst] = aName.split(' ');
+      const [bFirst] = bName.split(' ');
+      return aFirst.localeCompare(bFirst);
+    })
+    .map(([name, clinicians]) => {
+      // Split the clinician name into first and last names
+      const [firstName, lastName = ''] = name.split(' ');
 
-    // Calculate Show_Hours and Late_No_Show_Hours based on BillingCode
-    const showHoursNotes = clinicians
-      .filter((c: IncomingData) => SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '')&& c.ProgressNoteStatus?.toLowerCase().trim() !== 'no note')
-      .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
+      // Calculate Show_Hours and Late_No_Show_Hours based on BillingCode
+      const showHoursNotes = clinicians
+        .filter((c: IncomingData) => SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '')&& c.ProgressNoteStatus?.toLowerCase().trim() !== 'no note')
+        .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
 
-    const showHoursNoNotes = clinicians
-      .filter((c: IncomingData) => SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ProgressNoteStatus?.toLowerCase().trim() === 'no note')
-      .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
+      const showHoursNoNotes = clinicians
+        .filter((c: IncomingData) => SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ProgressNoteStatus?.toLowerCase().trim() === 'no note')
+        .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
 
-    //Get all the dates that are not in the showHoursNoNotes
-    // const showHoursNoNotesDates = clinicians
-    //   .filter((c: IncomingData) => SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ProgressNoteStatus?.toLowerCase().trim() === 'no note')
-    //   .map(c => c.DateOfService).join(';')
+      const lateNoShowHoursPaid = clinicians
+        .filter((c: IncomingData) => NO_SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ClientPaymentStatus?.toLowerCase().trim() === 'paid')
+        .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
 
-    // console.log('showHoursNoNotesDates', showHoursNoNotesDates);
+      const lateNoShowHoursUnPaid = clinicians
+        .filter((c: IncomingData) => NO_SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ClientPaymentStatus?.toLowerCase().trim() === 'unpaid')
+        .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
 
-    const lateNoShowHoursPaid = clinicians
-      .filter((c: IncomingData) => NO_SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ClientPaymentStatus?.toLowerCase().trim() === 'paid')
-      .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
+      const groupHours = clinicians
+        .filter((c: IncomingData) => GROUP_HOURS.includes(c.BillingCode?.trim() ?? ''))
+        .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
 
-    const lateNoShowHoursUnPaid = clinicians
-      .filter((c: IncomingData) => NO_SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ClientPaymentStatus?.toLowerCase().trim() === 'unpaid')
-      .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
-
-    const groupHours = clinicians
-      .filter((c: IncomingData) => GROUP_HOURS.includes(c.BillingCode?.trim() ?? ''))
-      .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
-
-    // Create and return the OutgoingData object
-    return new OutgoingData({
-      ClinicianFirstName: firstName,
-      ClinicianLastName: lastName,
-      ShowHoursNotes: showHoursNotes, // Subtract showHoursNoNotes from showHours
-      ShowHoursNoNotes: showHoursNoNotes,
-      LateNoShowHoursPaid: lateNoShowHoursPaid,
-      LateNoShowHoursUnPaid: lateNoShowHoursUnPaid, // Assuming this is not calculated in the current logic
-      GroupHours: groupHours,
-      TotalHours: showHoursNotes + lateNoShowHoursPaid, // Calculate total hours
-      Notes: '', // Provide a default or calculated value as needed
+      // Create and return the OutgoingData object
+      return new OutgoingData({
+        ClinicianFirstName: firstName,
+        ClinicianLastName: lastName,
+        ShowHoursNotes: showHoursNotes,
+        ShowHoursNoNotes: showHoursNoNotes,
+        LateNoShowHoursPaid: lateNoShowHoursPaid,
+        LateNoShowHoursUnPaid: lateNoShowHoursUnPaid,
+        GroupHours: groupHours,
+        TotalHours: showHoursNotes + lateNoShowHoursPaid,
+        Notes: '',
+      });
     });
-  });
 }
 
 // Converts an array of objects to a CSV string

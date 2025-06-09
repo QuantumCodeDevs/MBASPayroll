@@ -1,5 +1,5 @@
 export const MISC_Billing_Codes: string[] = [
-    "1"
+    "01"
 ];
 
 export const SHOW_BILLING_CODES: string[] = [
@@ -12,11 +12,11 @@ export const SHOW_BILLING_CODES: string[] = [
     "90847",
     "90854",
     "90855",
-    "12",
-    "13",
-    "15",
-    "16",
-    "20"
+    "012",
+    "013",
+    "015",
+    "016",
+    "020"
 ];
 
 export const GROUP_HOURS: string[] = [
