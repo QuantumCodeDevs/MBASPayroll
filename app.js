@@ -82,6 +82,13 @@ const createWindow = () => {
         {
             label: 'Help',
             submenu: [
+                // {
+                //     label: 'Documentation',
+                //     //Open the documentation URL in a external browser
+                //     click: () => {
+                //         require('electron').shell.openExternal('https://google.com');
+                //     }
+                // },
                 {
                     label: 'About',
                     click: () => {
@@ -105,24 +112,6 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.enableSandbox()
 app.whenReady().then(async () => {
-    // protocol.handle('app', async (request) => {
-    //     const url = new URL(request.url);
-    //     const filePath = decodeURIComponent(url.pathname);
-    //     const fullPath = path.join(__dirname, '../dist/mbas-payroll/browser', filePath);
-
-    //     // If the file exists, return it; otherwise, return index.html
-    //     return new Response(
-    //         fs.existsSync(fullPath)
-    //             ? fs.readFileSync(fullPath)
-    //             : fs.readFileSync(path.join(__dirname, '../dist/mbas-payroll/browser/index.html')),
-    //         {
-    //             headers: {
-    //                 'Content-Type': 'text/html',
-    //             }
-    //         }
-    //     );
-    // });
-
     // Dynamically import electron-store
     const Store = (await import('electron-store')).default;
     store = new Store();

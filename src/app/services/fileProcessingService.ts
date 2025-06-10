@@ -124,12 +124,13 @@ function createOutputData(groups: Map<string, IncomingData[]>): OutgoingData[] {
       return new OutgoingData({
         ClinicianFirstName: firstName,
         ClinicianLastName: lastName,
-        ShowHoursNotes: showHoursNotes,
-        ShowHoursNoNotes: showHoursNoNotes,
-        LateNoShowHoursPaid: lateNoShowHoursPaid,
-        LateNoShowHoursUnPaid: lateNoShowHoursUnPaid,
+        ShowWithNotesHours: showHoursNotes,
+        ShowWithoutNotesHours: showHoursNoNotes,
+        LateNoShowPaidHours: lateNoShowHoursPaid,
+        LateNoShowUnPaidHours: lateNoShowHoursUnPaid,
         GroupHours: groupHours,
-        TotalHours: showHoursNotes + lateNoShowHoursPaid,
+        NotePaidHours: showHoursNotes + lateNoShowHoursPaid,
+        TotalHours: showHoursNotes + showHoursNoNotes + lateNoShowHoursPaid + lateNoShowHoursUnPaid,
         Notes: '',
       });
     });

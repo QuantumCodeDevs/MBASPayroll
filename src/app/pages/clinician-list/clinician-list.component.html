@@ -1,3 +1,7 @@
 <section>
-    <app-interactive-table [employees]="employees" (employeesChange)="onEmployeesChange($event)"></app-interactive-table>
+  <app-interactive-table
+    [data]="employees"
+    [columns]="columns"
+    (dataChange)="onEmployeesChange($event)">
+  </app-interactive-table>
 </section>

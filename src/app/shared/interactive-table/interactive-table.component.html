@@ -10,37 +10,36 @@
             placeholder="Search employees..."
             [(ngModel)]="searchTerm"
         />
-        <button class="btn btn-primary btn-sm" (click)="addRow()">+ Add Employee</button>
+        <button class="btn btn-primary btn-sm" (click)="addRow(); $event.stopPropagation()">+ Add Employee</button>
     </div>
 </section>
 
-<table class="table table-bordered table-striped">
+<table #tableRef class="table table-bordered table-striped">
   <thead>
     <tr>
-      <th (click)="sortBy('index')" style="cursor:pointer;"># <span *ngIf="sortColumn === 'index'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span></th>
-      <th (click)="sortBy('firstName')" style="cursor:pointer;">First Name <span *ngIf="sortColumn === 'firstName'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span></th>
-      <th (click)="sortBy('lastName')" style="cursor:pointer;">Last Name <span *ngIf="sortColumn === 'lastName'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span></th>
-      <th (click)="sortBy('personalNumber')" style="cursor:pointer;">Personal Number <span *ngIf="sortColumn === 'personalNumber'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span></th>
-      <th (click)="sortBy('workNumber')" style="cursor:pointer;">Work Number <span *ngIf="sortColumn === 'workNumber'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span></th>
-      <th (click)="sortBy('type')" style="cursor:pointer;">Employment Type <span *ngIf="sortColumn === 'type'">{{ sortDirection === 'asc' ? '▲' : '▼' }}</span></th>
+      <th *ngFor="let col of columns">{{ col.label }}</th>
       <th>Actions</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let emp of filteredEmployees(); let i = index">
-      <td>{{ i + 1 }}</td>
-      <td><input [(ngModel)]="emp.firstName" (ngModelChange)="onFieldChange()" class="form-control" /></td>
-      <td><input [(ngModel)]="emp.lastName" (ngModelChange)="onFieldChange()" class="form-control" /></td>
-      <td><input [(ngModel)]="emp.personalNumber" (ngModelChange)="onFieldChange()" class="form-control" /></td>
-      <td><input [(ngModel)]="emp.workNumber" (ngModelChange)="onFieldChange()" class="form-control" /></td>
-      <td>
-        <select [(ngModel)]="emp.type" (ngModelChange)="onFieldChange()" class="form-select">
-          <option [ngValue]="Employment.Employee">Employee</option>
-          <option [ngValue]="Employment.Contractor">Contractor</option>
-        </select>
+    <tr *ngFor="let row of filteredData(); let i = index"
+        (click)="selectRow(i)"
+        [class.table-active]="selectedRowIndex === i">
+      <td *ngFor="let col of columns">
+        <ng-container *ngIf="selectedRowIndex === i; else displayCell">
+          <ng-container [ngSwitch]="col.type">
+            <input *ngSwitchCase="'text'" [(ngModel)]="row[col.key]" class="form-control" />
+            <select *ngSwitchCase="'select'" [(ngModel)]="row[col.key]" class="form-select">
+              <option *ngFor="let opt of col.options" [ngValue]="opt">{{ opt }}</option>
+            </select>
+          </ng-container>
+        </ng-container>
+        <ng-template #displayCell>
+          <span>{{ row[col.key] }}</span>
+        </ng-template>
       </td>
       <td>
-        <button class="btn btn-danger btn-sm" (click)="deleteRow(i)">Delete</button>
+        <button class="btn btn-danger btn-sm" (click)="deleteRow(i); $event.stopPropagation();">Delete</button>
       </td>
     </tr>
   </tbody>

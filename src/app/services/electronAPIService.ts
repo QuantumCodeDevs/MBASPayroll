@@ -1,6 +1,7 @@
 // Electron Service to access Electron APIs
 import { Injectable } from '@angular/core';
 import { InputFile } from '../models/InputFile';
+import { Employee } from '../models/employee';
 
 //Injectable decorator allows this service to be injected into components or other services
 @Injectable({
@@ -20,7 +21,7 @@ export class ElectronAPIService {
     }
 
     //Save Employees to Database
-    saveEmployeesToDb(employees: any[]): Promise<void> {
+    saveEmployeesToDb(employees: Employee[]): Promise<void> {
         return window.electronAPI.saveEmployeesToDb(employees);
     }
 
