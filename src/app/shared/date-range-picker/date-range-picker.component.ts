@@ -7,7 +7,6 @@ import {
   OnInit,
   OnDestroy,
   ViewChild,
-  output,
   Output,
   EventEmitter,
 } from '@angular/core';

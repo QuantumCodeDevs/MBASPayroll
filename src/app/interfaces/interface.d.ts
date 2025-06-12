@@ -1,5 +1,5 @@
 import { Employee } from "../models/employee";
-import { InputFile } from "../models/InputFile"
+import { InputFile } from "../models/inputFile"
 
 export interface IElectronAPI {
     selectFile: () => Promise<InputFile>,

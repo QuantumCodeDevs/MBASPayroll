@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { ToastMessage } from '../models/toastmessage';
 
-export interface ToastMessage {
-  text: string;
-  type?: 'success' | 'error' | 'info' | 'warning';
-  duration?: number; // ms
-}
+@Injectable({ 
+  providedIn: 'root' 
+})
 
-@Injectable({ providedIn: 'root' })
 export class ToastService {
   private _toast$ = new BehaviorSubject<ToastMessage | null>(null);
   toast$ = this._toast$.asObservable();

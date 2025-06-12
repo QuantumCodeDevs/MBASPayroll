@@ -1,7 +1,21 @@
 .toast-container {
-  min-width: 250px;
+  position: fixed !important;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1080;
+  width: auto;
+  max-width: 90vw;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Prevents vertical stretching */
   pointer-events: none;
+  height: auto;            /* Ensures container only fits content */
+  min-height: unset;       /* Remove any min-height */
+  padding: 0;              /* Remove extra padding */
+  margin: 0;               /* Remove extra margin */
 }
+
 .toast {
   pointer-events: auto;
   opacity: 0.95;

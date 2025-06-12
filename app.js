@@ -14,7 +14,7 @@ const createWindow = () => {
             preload: join(__dirname, 'preload.js'),
             contextIsolation: true,
             enableRemoteModule: false,
-            webSecurity: true
+            webSecurity: false, // Disable web security for local development issue with prod currently
         }
     })
 
@@ -117,13 +117,13 @@ app.whenReady().then(async () => {
     store = new Store();
 
     //Set CORS Policy
-    session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-        callback({
-            responseHeaders: Object.assign({
-                "Content-Security-Policy": ["default-src 'self' 'unsafe-inline';"]
-            }, details.responseHeaders)
-        });
-    });
+    // session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    //     callback({
+    //         responseHeaders: Object.assign({
+    //             "Content-Security-Policy": ["default-src 'self' 'unsafe-inline';"]
+    //         }, details.responseHeaders)
+    //     });
+    // });
 
     //DEBUG: Uncomment to clear cache
     // try {

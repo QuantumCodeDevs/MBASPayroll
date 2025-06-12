@@ -15,6 +15,7 @@ export interface TableColumn {
   templateUrl: './interactive-table.component.html',
   styleUrl: './interactive-table.component.css'
 })
+
 export class InteractiveTableComponent implements OnInit, OnChanges {
   @Input() data: any[] = [];
   @Input() columns: TableColumn[] = [];

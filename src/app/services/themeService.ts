@@ -6,12 +6,12 @@ import { Injectable, signal } from '@angular/core';
 export class ThemeService {
   isDarkMode = signal(false); // Angular Signal for reactivity
 
-  //Change to Electron Store
+  //Change to Electron Store?
   constructor() {
     // Load dark mode state from local storage
     const savedMode = localStorage.getItem('darkMode') === 'true';
     this.isDarkMode.set(savedMode);
-    this.applyTheme(savedMode); // Apply on initialization
+    this.applyTheme(savedMode); // Apply on initialization works as long as it is injected in some component
   }
 
   // Toggle dark mode
@@ -25,10 +25,6 @@ export class ThemeService {
   // Apply dark mode and Bootstrap classes to body
   // Apply dark mode, Bootstrap classes, and text color to body
   applyTheme(isDark: boolean) {
-    document.body.classList.toggle('dark-mode', isDark);
-
-    // document.querySelectorAll('nav, app-home').forEach(element => {
-    //   element.classList.toggle('dark-mode', isDark);
-    // });    
+    document.body.classList.toggle('dark-mode', isDark);  
   }
 }

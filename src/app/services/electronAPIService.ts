@@ -1,6 +1,6 @@
 // Electron Service to access Electron APIs
 import { Injectable } from '@angular/core';
-import { InputFile } from '../models/InputFile';
+import { InputFile } from '../models/inputFile';
 import { Employee } from '../models/employee';
 
 //Injectable decorator allows this service to be injected into components or other services

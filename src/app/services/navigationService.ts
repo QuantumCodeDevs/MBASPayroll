@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
+
 export class NavigationService {
   constructor(private router: Router, private ngZone: NgZone) {
     //Check if the API is available

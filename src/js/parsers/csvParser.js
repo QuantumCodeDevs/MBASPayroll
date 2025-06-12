@@ -9,7 +9,6 @@ function parseCsv(filePath) {
     fs.createReadStream(filePath)
       .pipe(csv())
       .on('data', (row) => {
-        // Push each row as a plain object, regardless of columns
         results.push(row);
       })
       .on('end', () => {
