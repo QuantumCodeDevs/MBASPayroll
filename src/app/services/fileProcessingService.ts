@@ -36,7 +36,6 @@ export class FileProcessingService {
           break;
       }
 
-
       //Could add a switch statement here to handle different formats in the future
       return new OutputFile({
         FileName: `${dateRange}processed_clinicians.${format}`,
