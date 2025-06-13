@@ -1,12 +1,17 @@
+#Action name
 name: Build and Release Electron App for Windows and Linux
 
 on:
+  #manual dispatch action
   workflow_dispatch:
 
+#Jobs to nessary to complete build and github release
 jobs:
   build:
+    build:
     name: Build for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest]
@@ -24,31 +29,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install required Linux packages
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            fakeroot \
-            dpkg \
-            rpm \
-            libarchive-tools \
-            libgconf-2-4 \
-            libgtk-3-0 \
-            libnotify4 \
-            libnss3 \
-            libxss1 \
-            libxtst6 \
-            xdg-utils \
-            libatspi2.0-0 \
-            libuuid1 \
-            libappindicator3-1 \
-            libsecret-1-0
-
       - name: Build the Electron app
         run: npm run make
 
-      - name: Upload build artifacts
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: electron-${{ matrix.os }}-build
