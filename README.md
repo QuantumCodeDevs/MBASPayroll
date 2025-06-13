@@ -1,6 +1,17 @@
 # MBASPayroll
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.6.
+## Description
+
+This project is to help with csv and in the future xls and xlsx processing to help with MBAS Payroll
+
+It takes in a csv file for Appointment Reporting and outputs a report summarizing all appointments counting for each clinician in the appointment report.
+
+
+
+
+## Development Notes
+
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.6. Along with Electron JS to package as a cross platform desktop application
 
 ## Development server
 

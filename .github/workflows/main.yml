@@ -1,11 +1,15 @@
+#Action Name
 name: Build Electron App for Windows and Linux
 
+#Triggers
 on:
   push:
     branches:
       - main
+  #Manual Only
   workflow_dispatch:
 
+#Jobs to run
 jobs:
   build:
     name: Build for ${{ matrix.os }}
@@ -13,61 +17,79 @@ jobs:
 
     strategy:
       matrix:
+      #List Release OS Platforms
         os: [windows-latest, ubuntu-latest]
 
+    #Build Steps
     steps:
+      #Checkout
       - name: Checkout code
         uses: actions/checkout@v3
 
+      #Configure Node
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
           cache: 'npm'
 
+      #Install dependencies via NPM
       - name: Install dependencies
         run: npm install
 
+      #Possible Angular Build first?
+      - name: Build Angular
+        run: npm run build
+
+      #Build the electron application
       - name: Build the Electron app
         run: npm run make
 
+      #Upload the artifacts
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: electron-${{ matrix.os }}-build
           path: out/make/**/*
-          
+
+  #Release artifacts to Github Release
   release:
     name: Create GitHub Release
     needs: build
     runs-on: ubuntu-latest
 
+    #Releases Steps
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      #Setup Node
       - name: Set up Node.js (to read version)
         uses: actions/setup-node@v3
         with:
           node-version: '20'
 
+      #Get App version
       - name: Get app version from package.json
         id: get_version
         run: |
           echo "VERSION=v$(node -p "require('./package.json').version")" >> $GITHUB_ENV
 
+      #Get Windows Artifacts
       - name: Download Windows artifacts
         uses: actions/download-artifact@v4
         with:
           name: electron-windows-latest-build
           path: artifacts/windows
 
+      #Get Linux Artifacts
       - name: Download Linux artifacts
         uses: actions/download-artifact@v4
         with:
           name: electron-ubuntu-latest-build
           path: artifacts/linux
 
+      #Create Github Release
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
