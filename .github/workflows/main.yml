@@ -1,27 +1,38 @@
-# name of your github action
-name: CI # this will help you specify where to run 
+name: Build Electron App for Windows and Linux
+
 on:
   push:
     branches:
-    # this will run on the electron branch
-      - electron 
+      - main
+  workflow_dispatch:
 
-# this is where the magic happens, each job happens in parallel btw
 jobs:
-  build_on_mac:
-    build_on_win:
-    runs-on: windows-2016
+  build:
+    name: Build for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+
     steps:
-    - uses: actions/checkout@master
-      with:
-        ref: feature/github-actions        
-    - uses: actions/setup-node@master
-      with:
-        node-version: 22.14
-    - name: install node tools
-      run: npm install
-    - name: build angular
-      run: npm run build
-    - name: build electron
-      run: npm run make
-    
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the Electron app
+        run: npm run make
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: electron-${{ matrix.os }}-build
+          path: out/make/**/*
