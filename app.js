@@ -15,6 +15,7 @@ const createWindow = () => {
             contextIsolation: true,
             enableRemoteModule: false,
             webSecurity: false, // Disable web security for local development issue with prod currently
+            icon: join(__dirname, '/assets/icon-white.png')
         }
     })
 
@@ -67,6 +68,18 @@ const createWindow = () => {
                         }
                     }
                 },
+                {
+                    label: 'Clear Cache',
+                    accelerator: process.platform === 'darwin' ? 'Command+Shift+C' : 'Ctrl+Shift+C',
+                    click: async () => {
+                        try {
+                            await session.clearCache();
+                            console.log("Electron cache cleared.");
+                        } catch (err) {
+                            console.error("Error clearing cache:", err);
+                        }
+                    }
+                }
                 {
                     label: 'Toggle Debug Tools',
                     accelerator: process.platform === 'darwin' ? 'Command+Alt+I' : 'Ctrl+Shift+I',
@@ -124,14 +137,6 @@ app.whenReady().then(async () => {
     //         }, details.responseHeaders)
     //     });
     // });
-
-    //DEBUG: Uncomment to clear cache
-    // try {
-    //     await session.clearCache();
-    //     console.log("Electron cache cleared.");
-    // } catch (err) {
-    //     console.error("Error clearing cache:", err);
-    // }
 
     createWindow()
 

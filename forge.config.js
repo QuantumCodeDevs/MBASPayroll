@@ -1,9 +1,11 @@
 const { FusesPlugin } = require('@electron-forge/plugin-fuses');
 const { FuseV1Options, FuseVersion } = require('@electron/fuses');
+const { join } = require('path');
 
 module.exports = {
   packagerConfig: {
     asar: true,
+    icon: join(__dirname, '/assets/icon-white')
   },
   rebuildConfig: {},
   makers: [
@@ -17,7 +19,11 @@ module.exports = {
     },
     {
       name: '@electron-forge/maker-deb',
-      config: {},
+      config: {
+        options: {
+          icon: join(__dirname, '/assets/icon-white.png')
+        }
+      },
     },
     // {
     //   name: '@electron-forge/maker-rpm',
