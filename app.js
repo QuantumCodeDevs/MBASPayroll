@@ -79,7 +79,7 @@ const createWindow = () => {
                             console.error("Error clearing cache:", err);
                         }
                     }
-                }
+                },
                 {
                     label: 'Toggle Debug Tools',
                     accelerator: process.platform === 'darwin' ? 'Command+Alt+I' : 'Ctrl+Shift+I',
