@@ -12,11 +12,9 @@ import { ToastComponent } from './shared/toast/toast.component';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  //Inject the Navigation Service into the Main App Component
+  //Inject services
   constructor(private navigationService: NavigationService, private themeService: ThemeService) {}
 
   ngOnInit() {
-    // Apply the theme globally on app initialization
-    //this.themeService.isDarkMode(); // Reactive
   }
 }

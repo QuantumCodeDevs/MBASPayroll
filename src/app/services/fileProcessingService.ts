@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IncomingData } from '../models/incommingData';
+import { IncomingData } from '../models/incomingData';
 import { OutgoingData } from '../models/outgoingData';
 import { OutputFile } from '../models/outputFile';
 import { MISC_Billing_Codes, SHOW_BILLING_CODES, NO_SHOW_BILLING_CODES, GROUP_HOURS } from '../models/billingCodes';
@@ -53,19 +53,19 @@ function mapInputDatatoClinicianArray(data: string): IncomingData[] {
   try {
     return JSON.parse(data!).map((c: any) =>
       new IncomingData({
-        DateOfService: c['Date of Service'],
-        Client: c.Client,
-        Clinician: c.Clinician,
-        BillingCode: c['Billing Code'],
-        RatePerUnit: c['Rate Per Unit'],
-        Units: c.Units,
-        TotalFee: c['Total Fee'],
-        ProgressNoteStatus: c['Progress Note Status'],
-        ClientPaymentStatus: c['Client Payment Status'],
-        Charge: c.Charge,
-        Uninvoiced: c.Uninvoiced,
-        Paid: c.Paid,
-        Unpaid: c.Unpaid
+        dateOfService: c['Date of Service'],
+        client: c.Client,
+        clinician: c.Clinician,
+        billingCode: c['Billing Code'],
+        ratePerUnit: c['Rate Per Unit'],
+        units: c.Units,
+        totalFee: c['Total Fee'],
+        progressNoteStatus: c['Progress Note Status'],
+        clientPaymentStatus: c['Client Payment Status'],
+        charge: c.Charge,
+        uninvoiced: c.Uninvoiced,
+        paid: c.Paid,
+        unpaid: c.Unpaid
       }));
   } catch (error) {
     console.error('Error mapping input data to clinician array:', error);
@@ -157,16 +157,16 @@ function createOutputData(groups: Map<string, IncomingData[]>): OutgoingData[] {
 
         // Create and return the OutgoingData object
         return new OutgoingData({
-          ClinicianFirstName: firstName,
-          ClinicianLastName: lastName,
-          ShowWithNotesHours: showHoursNotes,
-          ShowWithoutNotesHours: showHoursNoNotes,
-          LateNoShowPaidHours: lateNoShowHoursPaid,
-          LateNoShowUnPaidHours: lateNoShowHoursUnPaid,
-          GroupHours: groupHours,
-          NotePaidHours: showHoursNotes + lateNoShowHoursPaid,
-          TotalHours: showHoursNotes + showHoursNoNotes + lateNoShowHoursPaid + lateNoShowHoursUnPaid,
-          Notes: '',
+          clinicianFirstName: firstName,
+          clinicianLastName: lastName,
+          showWithNotesHours: showHoursNotes,
+          showWithoutNotesHours: showHoursNoNotes,
+          lateNoShowPaidHours: lateNoShowHoursPaid,
+          lateNoShowUnPaidHours: lateNoShowHoursUnPaid,
+          groupHours: groupHours,
+          notePaidHours: showHoursNotes + lateNoShowHoursPaid,
+          totalHours: showHoursNotes + showHoursNoNotes + lateNoShowHoursPaid + lateNoShowHoursUnPaid,
+          notes: '',
         });
       } catch (error) {
         console.error('Error processing clinician:', name, error);

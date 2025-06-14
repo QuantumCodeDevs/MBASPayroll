@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Employment } from '../../models/enum/employment.enum';
-import { Employee } from '../../models/employee';
+import { EmploymentType } from '../../models/enum/employmentType.enum';
+import { Clinician } from '../../models/clinician';
 import { InteractiveTableComponent, TableColumn } from '../../shared/interactive-table/interactive-table.component';
 import { ElectronAPIService } from '../../services/electronAPIService';
 
@@ -12,7 +12,7 @@ import { ElectronAPIService } from '../../services/electronAPIService';
   styleUrl: './clinician-list.component.css'
 })
 export class ClinicianListComponent implements OnInit {
-  employees: Employee[] = [];
+  employees: Clinician[] = [];
 
   // Define the columns for the interactive table
   columns: TableColumn[] = [
@@ -21,7 +21,7 @@ export class ClinicianListComponent implements OnInit {
     { key: 'text', label: 'Title', type: 'text' },
     { key: 'personalNumber', label: 'Personal Number', type: 'text' },
     { key: 'workNumber', label: 'Work Number', type: 'text' },
-    { key: 'type', label: 'Employment Type', type: 'select', options: [Employment.Employee, Employment.Contractor] }
+    { key: 'type', label: 'Employment Type', type: 'select', options: [EmploymentType.Employee, EmploymentType.Contractor] }
   ];
 
   constructor(private electronAPIService: ElectronAPIService) { }
@@ -32,7 +32,7 @@ export class ClinicianListComponent implements OnInit {
   }
 
   // Handle changes in the employee list from the interactive table
-  async onEmployeesChange(updatedList: Employee[]) {
+  async onEmployeesChange(updatedList: Clinician[]) {
     this.employees = updatedList;
     await this.electronAPIService.saveEmployeesToDb(this.employees);
   }

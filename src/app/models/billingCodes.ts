@@ -1,7 +1,9 @@
+//Billing Codes to ignore
 export const MISC_Billing_Codes: string[] = [
     "01"
 ];
 
+//Show Billing Codes
 export const SHOW_BILLING_CODES: string[] = [
     "90837",
     "90791",
@@ -20,11 +22,13 @@ export const SHOW_BILLING_CODES: string[] = [
     "020"
 ];
 
+//Group Billing Codes
 export const GROUP_HOURS: string[] = [
     "gr",
     "90853",
 ]
 
+//No Show and Late Cancel Billing Codes
 export const NO_SHOW_BILLING_CODES: string[] = [
     "111",
     "18",

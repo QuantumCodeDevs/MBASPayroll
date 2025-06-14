@@ -1,38 +1,36 @@
 export class OutgoingData {
-    Clinician_FirstName!: string;
-    Clinician_LastName!: string;
-
-    Show_With_Notes_Hours!: number;
-    Show_Without_Notes_Hours!: number;
-    Late_NoShow_Paid_Hours!: number;
-    Late_NoShow_UnPaid_Hours!: number;
-    Group_Hours!: number;
-    Note_Paid_Hours!: number;
-    Total_Hours!: number;
-
-    Notes: string = '';
+    clinicianFirstName!: string;
+    clinicianLastName!: string;
+    showWithNotesHours!: number;
+    showWithoutNotesHours!: number;
+    lateNoShowPaidHours!: number;
+    lateNoShowUnPaidHours!: number;
+    groupHours!: number;
+    notePaidHours!: number;
+    totalHours!: number;
+    notes: string = '';
 
     constructor(data: {
-        ClinicianFirstName: string;
-        ClinicianLastName: string;
-        ShowWithNotesHours: number;
-        ShowWithoutNotesHours: number;
-        LateNoShowPaidHours: number;
-        LateNoShowUnPaidHours: number;
-        GroupHours: number;
-        NotePaidHours: number;
-        TotalHours: number;
-        Notes: string;
+        clinicianFirstName: string;
+        clinicianLastName: string;
+        showWithNotesHours: number;
+        showWithoutNotesHours: number;
+        lateNoShowPaidHours: number;
+        lateNoShowUnPaidHours: number;
+        groupHours: number;
+        notePaidHours: number;
+        totalHours: number;
+        notes: string;
     }) {
-        this.Clinician_FirstName = data.ClinicianFirstName;
-        this.Clinician_LastName = data.ClinicianLastName;
-        this.Show_With_Notes_Hours = data.ShowWithNotesHours;
-        this.Show_Without_Notes_Hours = data.ShowWithoutNotesHours;
-        this.Late_NoShow_Paid_Hours = data.LateNoShowPaidHours;
-        this.Late_NoShow_UnPaid_Hours = data.LateNoShowUnPaidHours;
-        this.Group_Hours = data.GroupHours;
-        this.Note_Paid_Hours = data.NotePaidHours
-        this.Total_Hours = data.TotalHours;
-        this.Notes = data.Notes;
+        this.clinicianFirstName = data.clinicianFirstName;
+        this.clinicianLastName = data.clinicianLastName;
+        this.showWithNotesHours = data.showWithNotesHours;
+        this.showWithoutNotesHours = data.showWithoutNotesHours;
+        this.lateNoShowPaidHours = data.lateNoShowPaidHours;
+        this.lateNoShowUnPaidHours = data.lateNoShowUnPaidHours;
+        this.groupHours = data.groupHours;
+        this.notePaidHours = data.notePaidHours;
+        this.totalHours = data.totalHours;
+        this.notes = data.notes;
     }
 }

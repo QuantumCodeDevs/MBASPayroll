@@ -1,7 +1,7 @@
 // Electron Service to access Electron APIs
 import { Injectable } from '@angular/core';
 import { InputFile } from '../models/inputFile';
-import { Employee } from '../models/employee';
+import { Clinician } from '../models/clinician';
 
 //Injectable decorator allows this service to be injected into components or other services
 @Injectable({
@@ -21,7 +21,7 @@ export class ElectronAPIService {
     }
 
     //Save Employees to Database
-    saveEmployeesToDb(employees: Employee[]): Promise<void> {
+    saveEmployeesToDb(employees: Clinician[]): Promise<void> {
         return window.electronAPI.saveEmployeesToDb(employees);
     }
 
@@ -30,17 +30,12 @@ export class ElectronAPIService {
         return window.electronAPI.getEmployeesFromDb();
     }
 
-
-
-
-    
-    toggleDarkMode(): Promise<boolean> {
-        return window.electronAPI.toggleDarkMode();
-    }
-
-    getTheme(): Promise<string> {
-        return window.electronAPI.getTheme();
-    }
-
     // Add more methods to access other Electron APIs
+    // toggleDarkMode(): Promise<boolean> {
+    //     return window.electronAPI.toggleDarkMode();
+    // }
+
+    // getTheme(): Promise<string> {
+    //     return window.electronAPI.getTheme();
+    // }
 }

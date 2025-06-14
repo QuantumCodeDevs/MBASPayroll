@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgFor } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterModule } from '@angular/router';
-import { ThemeService } from '../../services/themeService';
 
 @Component({
   selector: 'app-sidenav',
