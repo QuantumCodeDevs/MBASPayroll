@@ -1,17 +1,19 @@
 <section class="container-fluid">
-    <h2 class="text-center mb-4">Employee Management</h2>
+    <h2 class="text-center mb-4">Clinician Management</h2>
 </section>
 
-<section>
-    <div class="input-group mb-2">
-        <input
+<section class="mb-2 d-flex justify-content-between">
+  <button class="btn btn-primary btn-sm" (click)="addRow(); $event.stopPropagation()">+ Add Clinician</button>
+  <button class="btn btn-primary btn-sm">Upload Clinician List</button>
+</section>
+
+<section class="mb-2">
+    <input
             type="text"
             class="form-control form-control-sm"
             placeholder="Search employees..."
             [(ngModel)]="searchTerm"
         />
-        <button class="btn btn-primary btn-sm" (click)="addRow(); $event.stopPropagation()">+ Add Employee</button>
-    </div>
 </section>
 
 <table #tableRef class="table table-bordered table-striped">

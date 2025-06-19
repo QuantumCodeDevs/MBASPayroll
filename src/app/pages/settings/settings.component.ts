@@ -9,5 +9,12 @@ import { ThemeService } from '../../services/themeService';
 export class SettingsComponent {
   constructor(public themeService: ThemeService) {} // Inject ThemeService
 
-  isDarkMode = computed(() => this.themeService.isDarkMode()); // Reactive from the theme service
+  isDarkMode = computed(() => this.themeService.isDarkMode()); // Reactive from the theme service to know which theme is on
+
+  //Handles toggling from light and dark mode
+  toggleDarkMode() {
+    this.themeService.toggleDarkMode();
+  }
+
+  //Add more settings below
 }

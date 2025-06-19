@@ -3,6 +3,7 @@ import { IncomingData } from '../models/incomingData';
 import { OutgoingData } from '../models/outgoingData';
 import { OutputFile } from '../models/outputFile';
 import { MISC_Billing_Codes, SHOW_BILLING_CODES, NO_SHOW_BILLING_CODES, GROUP_HOURS } from '../models/billingCodes';
+import { ArrayUtils } from '../utils/array-utils';
 
 //Injectable decorator allows this service to be injected into components or other services
 @Injectable({
@@ -20,23 +21,28 @@ export class FileProcessingService {
         throw new Error('data is undefined');
       }
 
-      // Convert CSV string to an array of InputData
-      var clinicianArray = mapInputDatatoClinicianArray(data);
+      // Convert incoming string to an array of InputData
+      var clinicianArray = ArrayUtils.mapInputDataToArray<IncomingData>(data);
       // Filter out entries with MISC_Billing_Codes
       clinicianArray = filterOutMiscBillingCodes(clinicianArray);
+
       // Group by Clinician
-      const groupedData = groupByClinician(clinicianArray);
-      // Create output data from grouped data
+      var groupedData = groupByClinician(clinicianArray);
+      // Sort Groups
+      groupedData = sortClinicians(groupedData);
+
+      // Create output data from sorted grouped data
       const outputData = createOutputData(groupedData);
 
+      //Format the output data
       switch (format) {
         case 'csv':
           // If format is csv, we will convert the output data to CSV format
-          this.outputData = arrayToCsv(outputData);
+          this.outputData = ArrayUtils.arrayToCsv(outputData);
           break;
       }
 
-      //Could add a switch statement here to handle different formats in the future
+      //Create the output file
       return new OutputFile({
         FileName: `${dateRange}processed_clinicians.${format}`,
         Data: this.outputData
@@ -45,31 +51,6 @@ export class FileProcessingService {
       console.error('Error processing file:', error);
       throw error; // Re-throw the error to be caught in the calling function 
     }
-  }
-
-}
-// This function maps the input data string to an array of IncomingData objects
-function mapInputDatatoClinicianArray(data: string): IncomingData[] {
-  try {
-    return JSON.parse(data!).map((c: any) =>
-      new IncomingData({
-        dateOfService: c['Date of Service'],
-        client: c.Client,
-        clinician: c.Clinician,
-        billingCode: c['Billing Code'],
-        ratePerUnit: c['Rate Per Unit'],
-        units: c.Units,
-        totalFee: c['Total Fee'],
-        progressNoteStatus: c['Progress Note Status'],
-        clientPaymentStatus: c['Client Payment Status'],
-        charge: c.Charge,
-        uninvoiced: c.Uninvoiced,
-        paid: c.Paid,
-        unpaid: c.Unpaid
-      }));
-  } catch (error) {
-    console.error('Error mapping input data to clinician array:', error);
-    throw error; // Re-throw the error to be caught in the calling function
   }
 }
 
@@ -103,13 +84,11 @@ function groupByClinician(data: IncomingData[]): Map<string, IncomingData[]> {
   }
 }
 
-function createOutputData(groups: Map<string, IncomingData[]>): OutgoingData[] {
-  // Convert groups to array, sort by first name, then map to OutgoingData
-  return Array.from(groups.entries())
-    // Sort by clinician name
-    // This sorts by first name, then by last name
-    .sort(([aName], [bName]) => {
-      try {
+//Sort Clinician Groups
+function sortClinicians(groups: Map<string, IncomingData[]>): Map<string, IncomingData[]> {
+  try {
+    const sortedEntries = Array.from(groups.entries())
+      .sort(([aName], [bName]) => {
         const aNameArray = aName.split(' ');
         const bNameArray = bName.split(' ');
 
@@ -122,38 +101,44 @@ function createOutputData(groups: Map<string, IncomingData[]>): OutgoingData[] {
         const firstCompare = aFirst.localeCompare(bFirst);
         if (firstCompare !== 0) return firstCompare;
         return aLast.localeCompare(bLast);
-      } catch (error) {
-        console.error('Error sorting clinicians:', error);
-        return 0; // If there's an error, keep the original order
-      }
-    })
-    .map(([name, clinicians]) => {
-      try {
+      });
+    return new Map<string, IncomingData[]>(sortedEntries);
+
+  } catch (error) {
+    console.error('Error sorting clinicians:', error);
+    return groups; // If there's an error, keep the original order
+  }
+}
+
+//Create Output data
+function createOutputData(groups: Map<string, IncomingData[]>): OutgoingData[] {
+  try {
+    // Convert groups to array, sort by first name, then map to OutgoingData
+    return Array.from(groups.entries())
+      .map(([name, clinicians]) => {
         // Split the clinician name into first and last names
         const nameParts = name.split(' ');
         const firstName = nameParts[0] || '';
         const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : '';
 
-        // Calculate Show_Hours and Late_No_Show_Hours based on BillingCode
-        // Show Hours with Notes and without Notes
+        // Calculate hours based on BillingCodes
+        // Show Hours with Notes
         const showHoursNotes = clinicians
-          .filter((c: IncomingData) => SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ProgressNoteStatus?.toLowerCase().trim() !== 'no note')
-          .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
+          .filter((c: IncomingData) => SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ProgressNoteStatus?.toLowerCase().trim() !== 'no note').length;
+        // Show Hours without Notes
         const showHoursNoNotes = clinicians
-          .filter((c: IncomingData) => SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ProgressNoteStatus?.toLowerCase().trim() === 'no note')
-          .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
-        // Late No Show Hours Paid and Unpaid
+          .filter((c: IncomingData) => SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ProgressNoteStatus?.toLowerCase().trim() === 'no note').length;
+
+        // Late No Show Hours Paid
         const lateNoShowHoursPaid = clinicians
-          .filter((c: IncomingData) => NO_SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ClientPaymentStatus?.toLowerCase().trim() === 'paid')
-          .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
+          .filter((c: IncomingData) => NO_SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ClientPaymentStatus?.toLowerCase().trim() === 'paid').length;
+        // Late No Show Hours Unpaid
         const lateNoShowHoursUnPaid = clinicians
-          .filter((c: IncomingData) => NO_SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ClientPaymentStatus?.toLowerCase().trim() === 'unpaid')
-          .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
+          .filter((c: IncomingData) => NO_SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ClientPaymentStatus?.toLowerCase().trim() === 'unpaid').length;
+
         // Group Hours
         const groupHours = clinicians
-          .filter((c: IncomingData) => GROUP_HOURS.includes(c.BillingCode?.trim() ?? ''))
-          .reduce((sum, c) => sum + (typeof c.Units === 'number' ? c.Units : parseFloat(c.Units ?? '0')), 0);
-
+          .filter((c: IncomingData) => GROUP_HOURS.includes(c.BillingCode?.trim() ?? '')).length;
 
         // Create and return the OutgoingData object
         return new OutgoingData({
@@ -168,22 +153,9 @@ function createOutputData(groups: Map<string, IncomingData[]>): OutgoingData[] {
           totalHours: showHoursNotes + showHoursNoNotes + lateNoShowHoursPaid + lateNoShowHoursUnPaid,
           notes: '',
         });
-      } catch (error) {
-        console.error('Error processing clinician:', name, error);
-        throw error; // Re-throw the error to be caught in the calling function
-      }
-    });
-}
-
-// Converts an array of objects to a CSV string
-function arrayToCsv(data: any[]): string {
-  try {
-    if (!data.length) return '';
-    const headers = Object.keys(data[0]).join(',');
-    const rows = data.map(row => Object.values(row).map(value => `"${value}"`).join(','));
-    return [headers, ...rows].join('\n');
+      });
   } catch (error) {
-    console.error('Error converting array to CSV:', error);
+    console.error('Error processing clinician:', name, error);
     throw error; // Re-throw the error to be caught in the calling function
   }
 }

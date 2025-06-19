@@ -6,11 +6,13 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 
+/*
+  This service allows Electron JS the ability to route to different Angular Routes 
+*/
 export class NavigationService {
   constructor(private router: Router, private ngZone: NgZone) {
     //Check if the API is available
     if (window.electronAPI) {
-      //Navigate using preload.js method
       window.electronAPI.onNavigate((route: string) => {
         this.ngZone.run(() => {
           this.router.navigate([route]);

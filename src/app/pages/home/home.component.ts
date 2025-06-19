@@ -8,10 +8,11 @@ import { OutputFile } from '../../models/outputFile';
 import { DateRangePickerComponent } from '../../shared/date-range-picker/date-range-picker.component';
 import { ToastService } from '../../services/toast.service';
 import { ToastMessage } from '../../models/toastmessage';
+import { TooltipComponent } from "../../shared/tooltip/tooltip.component";
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, FormsModule, DateRangePickerComponent],
+  imports: [CommonModule, FormsModule, DateRangePickerComponent, TooltipComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css' //,
 })

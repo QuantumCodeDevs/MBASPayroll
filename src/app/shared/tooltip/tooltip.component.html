@@ -1,0 +1,16 @@
+<span class="tooltip-wrapper" style="position: relative; display: inline-block;">
+  <span
+    class="tooltip-icon"
+    (click)="toggleTooltip($event)"
+    tabindex="0"
+    aria-label="Show info"
+    role="button"
+  >!</span>
+  <div
+    class="tooltip-container"
+    [ngClass]="position"
+    *ngIf="show"
+  >
+    {{ text }}
+  </div>
+</span>
