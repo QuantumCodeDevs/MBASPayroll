@@ -9,6 +9,11 @@ on:
   #Manual Only
   workflow_dispatch:
 
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
 #Jobs to run
 jobs:
   build:
