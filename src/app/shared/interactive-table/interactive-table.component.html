@@ -1,32 +1,32 @@
 <section class="container-fluid">
-    <h2 class="text-center mb-4">Clinician Management</h2>
+  <h2 class="text-center mb-4">Clinician Management</h2>
 </section>
 
 <section class="mb-2 d-flex justify-content-between">
   <button class="btn btn-primary btn-sm" (click)="addRow(); $event.stopPropagation()">+ Add Clinician</button>
-  <button class="btn btn-primary btn-sm">Upload Clinician List</button>
+  <button class="btn btn-primary btn-sm" (click)="upload()">Upload Clinician List</button>
 </section>
 
 <section class="mb-2">
-    <input
-            type="text"
-            class="form-control form-control-sm"
-            placeholder="Search employees..."
-            [(ngModel)]="searchTerm"
-        />
+  <input type="text" class="form-control form-control-sm" placeholder="Search employees..." [(ngModel)]="searchTerm" />
 </section>
 
 <table #tableRef class="table table-bordered table-striped">
   <thead>
     <tr>
-      <th *ngFor="let col of columns">{{ col.label }}</th>
+      <th *ngFor="let col of columns" (click)="sortBy(col.key)" style="cursor:pointer">
+        {{ col.label }}
+        <span *ngIf="sortColumn === col.key">
+          <span *ngIf="sortDirection === 'asc'">&#9650;</span>
+          <span *ngIf="sortDirection === 'desc'">&#9660;</span>
+        </span>
+      </th>
       <th>Actions</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let row of filteredData(); let i = index"
-        (click)="selectRow(i)"
-        [class.table-active]="selectedRowIndex === i">
+    <tr *ngFor="let row of filteredData(); let i = index" (click)="selectRow(i)"
+      [class.table-active]="selectedRowIndex === i">
       <td *ngFor="let col of columns">
         <ng-container *ngIf="selectedRowIndex === i; else displayCell">
           <ng-container [ngSwitch]="col.type">

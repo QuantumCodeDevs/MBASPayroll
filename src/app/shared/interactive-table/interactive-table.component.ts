@@ -1,6 +1,9 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ElectronAPIService } from '../../services/electronAPIService';
+import { ArrayUtils } from '../../utils/array-utils';
+import { Clinician } from '../../models/clinician';
 
 export interface TableColumn {
   key: string;
@@ -18,8 +21,12 @@ export interface TableColumn {
 
 export class InteractiveTableComponent implements OnInit, OnChanges {
   @Input() data: any[] = [];
-  @Input() columns: TableColumn[] = [];
+  // @Input() columns: TableColumn[] = [];
   @Output() dataChange = new EventEmitter<any[]>();
+
+  constructor(private electronAPIService: ElectronAPIService) { }
+
+  columns: TableColumn[] = [];
 
   searchTerm: string = '';
   sortColumn: string = '';
@@ -41,23 +48,38 @@ export class InteractiveTableComponent implements OnInit, OnChanges {
 
   //Column logic
   ngOnInit() {
-    this.ensureColumns();
+    this.inferColumns();
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['data'] || changes['columns']) {
-      this.ensureColumns();
+      this.inferColumns();
     }
   }
 
-  ensureColumns() {
-    if ((!this.columns || this.columns.length === 0) && Array.isArray(this.data) && this.data.length > 0) {
+  //Infer Columns from incoming data
+  inferColumns() {
+    if (this.data && this.data.length > 0) {
       this.columns = Object.keys(this.data[0]).map(key => ({
         key,
-        label: key,
+        label: this.toLabel(key),
         type: 'text'
       }));
+      // Reset sortColumn if it doesn't exist in new columns
+      if (!this.columns.some(col => col.key === this.sortColumn)) {
+        this.sortColumn = '';
+      }
+    } else {
+      this.columns = [];
+      this.sortColumn = '';
     }
+  }
+
+  toLabel(key: string): string {
+    return key.replace(/([A-Z])/g, ' $1')
+      .replace(/_/g, ' ')
+      .replace(/^./, str => str.toUpperCase())
+      .trim();
   }
 
   //Row selection logic
@@ -75,12 +97,14 @@ export class InteractiveTableComponent implements OnInit, OnChanges {
       newRow[col.key] = col.type === 'select' && col.options?.length ? col.options[0] : '';
     });
     this.data.push(newRow);
+    this.inferColumns(); // <-- Refresh columns
     this.selectedRowIndex = this.data.length - 1; // Select the new row for editing
     this.dataChange.emit(this.data);
   }
 
   deleteRow(index: number) {
     this.data.splice(index, 1);
+    this.inferColumns(); // <-- Refresh columns
     this.dataChange.emit(this.data); // emit immediately on delete
     // Optionally, deselect if the deleted row was selected
     if (this.selectedRowIndex === index) {
@@ -125,5 +149,16 @@ export class InteractiveTableComponent implements OnInit, OnChanges {
       });
     }
     return filtered;
+  }
+
+
+  async upload() {
+    var file = await this.electronAPIService.selectFile();
+    if (!file.Data) {
+      throw new Error('data is undefined');
+    }
+
+    this.data = ArrayUtils.mapInputDataToArray<Clinician>(file.Data);
+    this.dataChange.emit(this.data); // emit when editing finishes
   }
 }

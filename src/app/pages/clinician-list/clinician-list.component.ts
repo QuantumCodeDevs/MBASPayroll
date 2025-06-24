@@ -4,6 +4,7 @@ import { EmploymentType } from '../../models/enum/employmentType.enum';
 import { Clinician } from '../../models/clinician';
 import { InteractiveTableComponent, TableColumn } from '../../shared/interactive-table/interactive-table.component';
 import { ElectronAPIService } from '../../services/electronAPIService';
+import { ArrayUtils } from '../../utils/array-utils';
 
 @Component({
   selector: 'app-clinician-list',
@@ -16,11 +17,12 @@ export class ClinicianListComponent implements OnInit {
 
   // Define the columns for the interactive table
   columns: TableColumn[] = [
-    { key: 'firstName', label: 'First Name', type: 'text' },
-    { key: 'lastName', label: 'Last Name', type: 'text' },
-    { key: 'text', label: 'Title', type: 'text' },
+    { key: 'name', label: 'Name', type: 'text' },
+    { key: 'title', label: 'Title', type: 'text' },
+    { key: 'email', label: 'MBAS Emil', type: 'text' },
     { key: 'personalNumber', label: 'Personal Number', type: 'text' },
     { key: 'workNumber', label: 'Work Number', type: 'text' },
+    { key: 'miscNumber', label: 'Misc Number', type: 'text' },
     { key: 'type', label: 'Employment Type', type: 'select', options: [EmploymentType.Employee, EmploymentType.Contractor] }
   ];
 
