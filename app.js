@@ -8,8 +8,8 @@ let store;
 const createWindow = () => {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
-        width: 900,
-        height: 600,
+        width: 1200,
+        height: 700,
         webPreferences: {
             preload: join(__dirname, 'preload.js'),
             contextIsolation: true,
@@ -129,6 +129,7 @@ app.whenReady().then(async () => {
     const Store = (await import('electron-store')).default;
     store = new Store();
 
+    //TODO: Update to fix Security issue
     //Set CORS Policy
     // session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     //     callback({
@@ -154,9 +155,24 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
 })
 
-//API Calls to use in preload.js//
+
+//#region API Calls to use in preload.js//
 
 //#region File Selection and Saving//
+ipcMain.handle('select-folder', async () => {
+    const result = await dialog.showOpenDialog({
+        properties: ['openDirectory']
+    });
+
+    const { canceled, filePaths } = result;
+
+    if (canceled || !filePaths || filePaths.length === 0) {
+        return { success: false, folderPath: '', message: 'No folder selected' };
+    }
+
+    return { success: true, folderPath: filePaths[0], message: 'Folder selected' };
+});
+
 //Handle Selecting a CSV File
 ipcMain.handle('select-file', async () => {
     //Open File Dialog
@@ -182,7 +198,7 @@ ipcMain.handle('select-file', async () => {
     } catch (err) {
         return { Success: false, FileName: '', Data: '', Message: `Error reading CSV file: ${err.message}` };
     }
-})
+});
 
 // Handle Saving a CSV file
 ipcMain.handle('save-file', async (event, fileName, data) => {
@@ -216,4 +232,20 @@ ipcMain.handle('save-employees', async (event, employees) => {
 ipcMain.handle('load-employees', async () => {
     return store.get('employees', []);
 });
+//#endregion
+
+//#region Handle Settings storage
+ipcMain.handle('save-settings', async (event, settings) => {
+    store.set('settings', settings);
+    return { success: true };
+});
+
+// Load employees
+ipcMain.handle('load-settings', async () => {
+    settings = store.get('settings', []);
+    // console.log(settings);
+    return store.get('settings', []);
+});
+//#endregion
+
 //#endregion

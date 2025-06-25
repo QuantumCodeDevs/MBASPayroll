@@ -21,6 +21,7 @@ export interface TableColumn {
 
 export class InteractiveTableComponent implements OnInit, OnChanges {
   @Input() data: any[] = [];
+  @Input() name?: string;
   // @Input() columns: TableColumn[] = [];
   @Output() dataChange = new EventEmitter<any[]>();
 
@@ -46,7 +47,6 @@ export class InteractiveTableComponent implements OnInit, OnChanges {
     }
   }
 
-  //Column logic
   ngOnInit() {
     this.inferColumns();
   }
@@ -57,14 +57,18 @@ export class InteractiveTableComponent implements OnInit, OnChanges {
     }
   }
 
+  //#region Column logic
   //Infer Columns from incoming data
   inferColumns() {
+    console.log(this.data);
     if (this.data && this.data.length > 0) {
       this.columns = Object.keys(this.data[0]).map(key => ({
         key,
-        label: this.toLabel(key),
+        label: key,
         type: 'text'
       }));
+      console.log(this.columns);
+
       // Reset sortColumn if it doesn't exist in new columns
       if (!this.columns.some(col => col.key === this.sortColumn)) {
         this.sortColumn = '';
@@ -74,15 +78,9 @@ export class InteractiveTableComponent implements OnInit, OnChanges {
       this.sortColumn = '';
     }
   }
+  //#endregion
 
-  toLabel(key: string): string {
-    return key.replace(/([A-Z])/g, ' $1')
-      .replace(/_/g, ' ')
-      .replace(/^./, str => str.toUpperCase())
-      .trim();
-  }
-
-  //Row selection logic
+  //#region Row selection logic
   selectRow(i: number) {
     if (this.selectedRowIndex !== null && this.selectedRowIndex !== i) {
       this.dataChange.emit(this.data); // emit when switching rows
@@ -90,7 +88,7 @@ export class InteractiveTableComponent implements OnInit, OnChanges {
     this.selectedRowIndex = i;
   }
 
-  //Limit emitions to only when deselecting the row or deleting a row
+  //TODO: Limit emitions to only when deselecting the row or deleting a row
   addRow() {
     const newRow: any = {};
     this.columns.forEach(col => {
@@ -99,7 +97,20 @@ export class InteractiveTableComponent implements OnInit, OnChanges {
     this.data.push(newRow);
     this.inferColumns(); // <-- Refresh columns
     this.selectedRowIndex = this.data.length - 1; // Select the new row for editing
-    this.dataChange.emit(this.data);
+
+    //Not working currently
+    // Scroll to the new row vertically
+    // setTimeout(() => {
+    //   const tableElem = this.tableRef?.nativeElement as HTMLElement;
+    //   if (tableElem) {
+    //     const rowElems = tableElem.querySelectorAll('tr');
+    //     const newRowElem = rowElems[rowElems.length - 1] as HTMLElement;
+    //     if (newRowElem) {
+    //       newRowElem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+    //     }
+    //   }
+    // }, 0);
+    // this.dataChange.emit(this.data);
   }
 
   deleteRow(index: number) {
@@ -111,8 +122,9 @@ export class InteractiveTableComponent implements OnInit, OnChanges {
       this.selectedRowIndex = null;
     }
   }
+  //#endregion
 
-  //Sorting and Filtering logic
+  //#region Sorting and Filtering logic
   sortBy(column: string) {
     if (this.sortColumn === column) {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
@@ -150,9 +162,10 @@ export class InteractiveTableComponent implements OnInit, OnChanges {
     }
     return filtered;
   }
+  //#endregion
 
-
-  async upload() {
+  //UploadClinicianList
+  async uploadCSVList() {
     var file = await this.electronAPIService.selectFile();
     if (!file.Data) {
       throw new Error('data is undefined');

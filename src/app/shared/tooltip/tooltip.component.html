@@ -1,15 +1,27 @@
-<span class="tooltip-wrapper" style="position: relative; display: inline-block;">
+<span class="tooltip-wrapper"
+      style="position: relative; display: inline-block;"
+      (mouseenter)="onMouseEnter()"
+      (mouseleave)="onMouseLeave()">
   <span
+    *ngIf="!hover"
     class="tooltip-icon"
     (click)="toggleTooltip($event)"
     tabindex="0"
     aria-label="Show info"
     role="button"
   >!</span>
+  <span
+    *ngIf="hover"
+    class="tooltip-icon"
+    tabindex="0"
+    aria-label="Show info"
+    role="button"
+    style="pointer-events: none;"
+  >!</span>
   <div
     class="tooltip-container"
     [ngClass]="position"
-    *ngIf="show"
+    *ngIf="(hover && hovered) || (!hover && show)"
   >
     {{ text }}
   </div>

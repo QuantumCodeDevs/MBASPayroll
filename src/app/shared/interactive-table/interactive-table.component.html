@@ -1,16 +1,20 @@
+<!--header-->
 <section class="container-fluid">
-  <h2 class="text-center mb-4">Clinician Management</h2>
+  <h2 class="text-center mb-4">{{name}}</h2>
 </section>
 
+<!--Buttons-->
 <section class="mb-2 d-flex justify-content-between">
   <button class="btn btn-primary btn-sm" (click)="addRow(); $event.stopPropagation()">+ Add Clinician</button>
-  <button class="btn btn-primary btn-sm" (click)="upload()">Upload Clinician List</button>
+  <button class="btn btn-primary btn-sm" (click)="uploadCSVList()">Upload Clinician List</button>
 </section>
 
+<!--Searchbar-->
 <section class="mb-2">
   <input type="text" class="form-control form-control-sm" placeholder="Search employees..." [(ngModel)]="searchTerm" />
 </section>
 
+<!--Interactive Table-->
 <table #tableRef class="table table-bordered table-striped">
   <thead>
     <tr>

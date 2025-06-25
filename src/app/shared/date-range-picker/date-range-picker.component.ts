@@ -36,7 +36,6 @@ export class DateRangePickerComponent implements OnInit, OnDestroy {
   selectedRange: any = 'mm/dd/yyyy_mm/dd/yyyy'; // default format
 
   ngOnInit() {
-    console.log('DateRangePickerComponent initialized');
     const now = new Date();
     this.displayedMonth = now.getMonth();
     this.displayedYear = now.getFullYear();
@@ -44,7 +43,6 @@ export class DateRangePickerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log('DateRangePickerComponent destroyed');
   }
 
   toggleCalendar() {

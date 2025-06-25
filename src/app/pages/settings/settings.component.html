@@ -1,8 +1,18 @@
-<section class="form-check form-switch">
-  <input class="form-check-input" type="checkbox" role="switch" [checked]="isDarkMode()" (change)="toggleDarkMode()" />
-  <label class="form-check-label">
-    {{ isDarkMode() ? '🌙 Dark Mode' : '☀️ Light Mode' }}
-  </label>
+<section class="p-2">
+  <div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" role="switch" [checked]="isDarkMode()"
+      (change)="toggleDarkMode()" />
+    <label class="form-check-label">
+      {{ isDarkMode() ? '🌙 Dark Mode' : '☀️ Light Mode' }}
+    </label>
+  </div>
 </section>
 
+<section class="p-2">
+  <!--Input File Picker-->
+  <div class="input-group">
+    <input type="text" class="form-control" placeholder="Input File" [value]="outputDir" disabled>
+    <button class="btn btn-block btn-primary w-25" (click)="selectOutputDir()">Select Output Directory</button>
+  </div>
+</section>
 <!--Add more settings below-->

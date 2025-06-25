@@ -14,17 +14,7 @@ import { ArrayUtils } from '../../utils/array-utils';
 })
 export class ClinicianListComponent implements OnInit {
   employees: Clinician[] = [];
-
-  // Define the columns for the interactive table
-  columns: TableColumn[] = [
-    { key: 'name', label: 'Name', type: 'text' },
-    { key: 'title', label: 'Title', type: 'text' },
-    { key: 'email', label: 'MBAS Emil', type: 'text' },
-    { key: 'personalNumber', label: 'Personal Number', type: 'text' },
-    { key: 'workNumber', label: 'Work Number', type: 'text' },
-    { key: 'miscNumber', label: 'Misc Number', type: 'text' },
-    { key: 'type', label: 'Employment Type', type: 'select', options: [EmploymentType.Employee, EmploymentType.Contractor] }
-  ];
+  title = 'Clinician Management';
 
   constructor(private electronAPIService: ElectronAPIService) { }
 
