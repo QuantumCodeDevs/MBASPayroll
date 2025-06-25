@@ -12,7 +12,6 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        iconUrl: '', // Optional: URL to your .ico for installer branding
         setupIcon: join(__dirname, '/assets/icon-white.ico'), // Explicit .ico for Windows installer
       },
     },
