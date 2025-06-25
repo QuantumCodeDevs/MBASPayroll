@@ -11,12 +11,16 @@ module.exports = {
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        options: {
+          icon: join(__dirname, '/assets/icon-white.png')
+        }
+      },
     },
-    {
-      name: '@electron-forge/maker-zip',
-      platforms: ['darwin'],
-    },
+    // {
+    //   name: '@electron-forge/maker-zip',
+    //   platforms: ['darwin'],
+    // },
     {
       name: '@electron-forge/maker-deb',
       config: {
