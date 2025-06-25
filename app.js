@@ -15,7 +15,9 @@ const createWindow = () => {
             contextIsolation: true,
             enableRemoteModule: false,
             webSecurity: false, // Disable web security for local development issue with prod currently
-            icon: join(__dirname, '/assets/icon-white.png')
+            icon: process.platform === 'win32'
+                ? join(__dirname, '/assets/icon-white.ico')
+                : join(__dirname, '/assets/icon-white.png')
         }
     })
 

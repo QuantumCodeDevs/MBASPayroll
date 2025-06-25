@@ -12,9 +12,8 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        options: {
-          icon: join(__dirname, '/assets/icon-white.ico')
-        }
+        iconUrl: '', // Optional: URL to your .ico for installer branding
+        setupIcon: join(__dirname, '/assets/icon-white.ico'), // Explicit .ico for Windows installer
       },
     },
     // {
@@ -25,8 +24,8 @@ module.exports = {
       name: '@electron-forge/maker-deb',
       config: {
         options: {
-          icon: join(__dirname, '/assets/icon-white.png')
-        }
+          icon: join(__dirname, '/assets/icon-white.png'), // Explicit .png for Linux
+        },
       },
     },
     // {
