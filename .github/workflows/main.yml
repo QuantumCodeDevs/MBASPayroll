@@ -50,7 +50,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: electron-${{ matrix.os }}-build
-          path: out/make/**/*
+          path: out/*
 
   #Release artifacts to Github Release
   release:
