@@ -13,7 +13,7 @@ module.exports = {
       name: '@electron-forge/maker-squirrel',
       config: {
         options: {
-          icon: join(__dirname, '/assets/icon-white.png')
+          icon: join(__dirname, '/assets/icon-white.ico')
         }
       },
     },
