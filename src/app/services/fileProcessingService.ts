@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { IncomingData } from '../models/incomingData';
 import { OutgoingData } from '../models/outgoingData';
 import { OutputFile } from '../models/outputFile';
-import { MISC_Billing_Codes, SHOW_BILLING_CODES, NO_SHOW_BILLING_CODES, GROUP_HOURS } from '../models/billingCodes';
+import { MISC_Billing_Codes, SHOW_BILLING_CODES, NO_SHOW_BILLING_CODES, GROUP_HOURS, MEDICAID_BILLING_CODES } from '../models/billingCodes';
 import { ArrayUtils } from '../utils/array-utils';
 
 //Injectable decorator allows this service to be injected into components or other services
@@ -136,6 +136,9 @@ function createOutputData(groups: Map<string, IncomingData[]>): OutgoingData[] {
         const lateNoShowHoursUnPaid = clinicians
           .filter((c: IncomingData) => NO_SHOW_BILLING_CODES.includes(c.BillingCode?.trim() ?? '') && c.ClientPaymentStatus?.toLowerCase().trim() === 'unpaid').length;
 
+        const medicaid = clinicians
+          .filter((c: IncomingData) => MEDICAID_BILLING_CODES.includes(c.BillingCode?.trim() ?? '')).length;
+
         // Group Hours
         const groupHours = clinicians
           .filter((c: IncomingData) => GROUP_HOURS.includes(c.BillingCode?.trim() ?? '')).length;
@@ -151,6 +154,7 @@ function createOutputData(groups: Map<string, IncomingData[]>): OutgoingData[] {
           groupHours: groupHours,
           notePaidHours: showHoursNotes + lateNoShowHoursPaid,
           totalHours: showHoursNotes + showHoursNoNotes + lateNoShowHoursPaid + lateNoShowHoursUnPaid,
+          medicaidHours: medicaid,
           notes: '',
         });
       });

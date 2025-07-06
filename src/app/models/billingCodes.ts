@@ -33,3 +33,8 @@ export const NO_SHOW_BILLING_CODES: string[] = [
     "111",
     "18",
 ];
+
+export const MEDICAID_BILLING_CODES: string[] = [
+    "3111",
+    "3118"
+];

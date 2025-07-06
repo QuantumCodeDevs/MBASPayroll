@@ -8,6 +8,7 @@ export class OutgoingData {
     groupHours!: number;
     notePaidHours!: number;
     totalHours!: number;
+    medicaidHours!: number;
     notes: string = '';
 
     constructor(data: {
@@ -20,6 +21,7 @@ export class OutgoingData {
         groupHours: number;
         notePaidHours: number;
         totalHours: number;
+        medicaidHours: number;
         notes: string;
     }) {
         this.clinicianFirstName = data.clinicianFirstName;
@@ -31,6 +33,7 @@ export class OutgoingData {
         this.groupHours = data.groupHours;
         this.notePaidHours = data.notePaidHours;
         this.totalHours = data.totalHours;
+        this.medicaidHours = data.medicaidHours;
         this.notes = data.notes;
     }
 }
