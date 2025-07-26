@@ -2,6 +2,8 @@
 const { app, BrowserWindow, session, Menu, ipcMain, dialog, protocol, nativeTheme } = require('electron');
 const { join } = require('path');
 const { FileProcessor } = require('./src/js/fileProcessor');
+const { shell } = require('electron');
+
 //Store for saving data
 let store;
 
@@ -203,20 +205,32 @@ ipcMain.handle('select-file', async () => {
 });
 
 // Handle Saving a CSV file
-ipcMain.handle('save-file', async (event, fileName, data) => {
-    const result = await dialog.showSaveDialog({
-        defaultPath: join(app.getPath('documents'), fileName || 'output.csv'),
-        filters: [{ name: 'CSV Files', extensions: ['csv'] }]
-    });
+ipcMain.handle('save-file', async (event, fileName, data, filePath = null) => {
+    let path;
 
-    if (result.canceled || !result.filePath) {
-        return { success: false, message: 'Save cancelled.' };
+    if (filePath == null) {
+        const result = await dialog.showSaveDialog({
+            defaultPath: join(app.getPath('documents'), fileName || 'output.csv'),
+            filters: [{ name: 'CSV Files', extensions: ['csv'] }]
+        });
+
+        if (result.canceled || !result.filePath) {
+            return { success: false, message: 'Save cancelled.' };
+        }
+
+        path = result.filePath;
     }
-
+    else
+    {
+        path = `${filePath}/${fileName}`
+        console.log("File path provided: ", `${filePath}/${fileName}`);
+    }
+    
     try {
-        FileProcessor.writeFile(result.filePath, data);
+        FileProcessor.writeFile(path, data);
+        shell.showItemInFolder(path); // Show the file in the file explorer
 
-        return { success: true, message: `File saved at ${result.filePath}` };
+        return { success: true, message: `File saved at ${path}` };
     } catch (err) {
         return { success: false, message: `Error saving CSV file: ${err.message}` };
     }

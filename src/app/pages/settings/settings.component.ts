@@ -32,5 +32,11 @@ export class SettingsComponent {
     Settings.OutputFolder = this.outputDir;
     await this.settingsService.saveSettings();
   }
+
+  async clearOutputDir() {
+    this.outputDir = undefined;
+    Settings.OutputFolder = undefined;
+    await this.settingsService.saveSettings();
+  }
   //Add more settings below
 }

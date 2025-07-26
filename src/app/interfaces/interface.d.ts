@@ -6,7 +6,7 @@ export interface IElectronAPI {
   //Preload JS Exposed API Endpoints
   selectFolder: () => Promise<{ success: boolean; folderPath: string, message: string }>,
   selectFile: () => Promise<InputFile>,
-  saveFile: (fileName: string, content: string) => Promise<{ success: boolean; message: string }>,
+  saveFile: (fileName: string, content: string, filePath?: string) => Promise<{ success: boolean; message: string }>,
   onNavigate: (string) => Promise<void>,
   saveEmployeesToDb: (employees: Clinician[]) => Promise<void>,
   getEmployeesFromDb: () => Promise<any[]>,

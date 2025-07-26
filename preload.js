@@ -9,7 +9,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   //Select File to Process
   selectFile: () => ipcRenderer.invoke('select-file'),
   //Save File
-  saveFile: (fileName, content) => ipcRenderer.invoke('save-file', fileName, content),
+  saveFile: (fileName, content, filePath) => ipcRenderer.invoke('save-file', fileName, content, filePath ?? undefined),
   //Save Employees to DB
   saveEmployeesToDb: (employees) => ipcRenderer.invoke('save-employees', employees),
   //Get Employees from DB

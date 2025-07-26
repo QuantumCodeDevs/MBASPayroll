@@ -9,6 +9,7 @@ import { DateRangePickerComponent } from '../../shared/date-range-picker/date-ra
 import { ToastService } from '../../services/toast.service';
 import { ToastMessage } from '../../models/toastmessage';
 import { TooltipComponent } from "../../shared/tooltip/tooltip.component";
+import { Settings } from '../../models/settings';
 
 @Component({
   selector: 'app-home',
@@ -61,7 +62,7 @@ export class HomeComponent implements OnInit {
         return;
       }
 
-      var result = await this.electronAPIService.saveFile(this.outputFile.FileName, this.outputFile.Data);
+      var result = await this.electronAPIService.saveFile(this.outputFile.FileName, this.outputFile.Data, Settings.OutputFolder);
 
 
       if (result.success) {
