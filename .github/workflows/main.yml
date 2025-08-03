@@ -101,11 +101,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-         # Delete artifacts after release
-      - name: Delete artifacts
-        uses: geekyeggo/delete-artifact@v2
-        with:
-          name: |
-            electron-windows-latest-build
-            electron-ubuntu-latest-build
+      # Delete artifacts after release
+      - name: Delete all artifacts
+        run: |
+          artifacts=$(gh api repos/${{ github.repository }}/actions/artifacts --paginate --jq '.artifacts[].id')
+          for id in $artifacts; do
+            echo "Deleting artifact ID: $id"
+            gh api --method DELETE repos/${{ github.repository }}/actions/artifacts/$id
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
