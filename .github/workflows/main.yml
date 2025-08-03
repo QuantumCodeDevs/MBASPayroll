@@ -100,3 +100,12 @@ jobs:
             artifacts/linux/**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+         # Delete artifacts after release
+      - name: Delete artifacts
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: |
+            electron-windows-latest-build
+            electron-ubuntu-latest-build
+
